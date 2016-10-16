@@ -20,22 +20,26 @@ public class ParsingEngine {
 	public static int minimumWordsInAFrase = 5;
 	public static int retries = 5;
 	public static int delay = 200;
+	public static boolean debug = false;
 	
 	public static void main(String[] args) throws Exception {
 		//start();		
 	}
 
 
-	public static int start() throws Exception {
+	public static int start(String arg) throws Exception {		
+		if (arg.matches("debug")) debug = true; 
 		//PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
 		//System.setOut(out);
 		int result = 0;
+		int partial = 0;
 		
 		String[] source = MySQLAccess.getSources().split(" ");
 		int k = 0;
 		
 		if (source.length > 0) {		
 			for(int i=0;i < source.length;i++) {
+				partial = 0;
 				System.out.println("source[i]:"+source[i]);
 				String[] parts = source[i].split("#");
 				Elements links = null;
@@ -60,14 +64,19 @@ public class ParsingEngine {
 				    					+value+",'"
 				    					+ft.format(dNow)+"')";
 				    			
-				    			if (value > 0) if (MySQLAccess.executeUpdate(query)) result++;
-				    			//MySQLAccess.executeUpdate(query);
+				    			if (value > 0) if (MySQLAccess.executeUpdate(query)) { result++; partial++;}
+				    			//if (MySQLAccess.executeUpdate(query)) result++; partial++;
 				    			Thread.sleep(delay);
-				    			System.out.println(k+++": "+query);
+				    			
+				    			if (debug) System.out.println(k+": "+query);
+				    			else System.out.print(".");
+				    			k++;
 			    			}
 			    		}
 			    	}
 				}
+				System.out.println(partial+" links founds on "+source[i]);
+				System.out.println("");
 			}
 		}
 		return result;
@@ -94,7 +103,7 @@ public class ParsingEngine {
 		//System.out.println("processando keywords...");		
 		for (int i = 0;i < parts.length;i++) {
 			
-			if (text.toLowerCase().contains(parts[i].toLowerCase())) { count++; System.out.println(count+" "+parts[i].toLowerCase()+" ");}		
+			if (text.toLowerCase().contains(parts[i].toLowerCase())) { count++; if (debug) System.out.println(count+" "+parts[i].toLowerCase()+" ");}		
 		}		
 		
 		return count;

@@ -14,9 +14,9 @@ public class Reminder {
         public void run() {
             System.out.println("Time's up!");
             try {
-				ParsingEngine.start();
+				ParsingEngine.start("silence");
 				System.out.println("Removendo duplicações...");
-				MySQLAccess.removeDuplicates();
+				MySQLAccess.removeDuplicates("silence");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

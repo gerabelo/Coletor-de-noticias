@@ -15,9 +15,11 @@ public class MySQLAccess {
 	private static String connectionUser = "root";
 	private static String connectionPassword = "123456";
 	
-	static Connection conn = null;
-	static Statement stmt = null;
-	static ResultSet rs = null;
+	public static Connection conn = null;
+	public static Statement stmt = null;
+	public static ResultSet rs = null;
+	
+	public static boolean debug = false;
 	
 	public static void main(String args[]) {}
 	
@@ -178,7 +180,9 @@ public class MySQLAccess {
 	}
 	
 	
-	public static void removeDuplicates() {
+	public static void removeDuplicates(String arg) {
+		
+		if (arg.matches("debug")) debug = true;
 		
 		String query = "";
 		String id="";
@@ -204,19 +208,23 @@ public class MySQLAccess {
 				
 				if (chkMD5(md5)) {
 					query = "DELETE FROM news WHERE id ="+id;
-					System.out.println(query);
+					if (debug) System.out.println(query);
+					else System.out.print(".");
 					executeUpdate(query);
 					Thread.sleep(200);
 				} else {
 					query = "INSERT INTO duplicates (newsId,hash) VALUES ("+id+",'"+md5+"')";
-					System.out.println(query);
+					if (debug) System.out.println(query);
+					else System.out.print(".");
 					executeUpdate(query);
 					Thread.sleep(200);
 				}
 			}
 			
 			query = "DELETE FROM duplicates";
-			System.out.println(query);
+			if (debug) System.out.println(query);
+			else System.out.print(".");
+			
 			executeUpdate(query);
 		} catch (Exception e) {
 			e.printStackTrace();
