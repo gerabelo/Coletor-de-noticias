@@ -75,6 +75,7 @@ public class ParsingEngine {
 			    		}
 			    	}
 				}
+				System.out.println("");
 				System.out.println(partial+" links founds on "+source[i]);
 				System.out.println("");
 			}
