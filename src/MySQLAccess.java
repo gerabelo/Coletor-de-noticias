@@ -1,3 +1,6 @@
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,13 +11,13 @@ import java.sql.Statement;
 
 public class MySQLAccess {
 	
-	private static Connection conn = null;
-	private static Statement stmt = null;
-	private static ResultSet rs = null;
-
 	private static String connectionUrl = "jdbc:mysql://127.0.0.1/webbot?autoReconnect=true&useSSL=false";			
 	private static String connectionUser = "root";
 	private static String connectionPassword = "123456";
+	
+	static Connection conn = null;
+	static Statement stmt = null;
+	static ResultSet rs = null;
 	
 	public static void main(String args[]) {}
 	
@@ -36,16 +39,16 @@ public class MySQLAccess {
 			return rs;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return rs;
 		} finally {
-			try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (stmt != null) stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
-		}
-		
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }
+		return null;		
 	}
 	
-	public static void executeUpdate(String query) {
+	public static boolean executeUpdate(String query) {
+		boolean result = false;
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -59,15 +62,16 @@ public class MySQLAccess {
 //				String url = rs.getString("url");
 //
 //				System.out.println("ID: " + id + ", url: " + url);
-//			}			
+//			}	
+			result = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-		} finally {			
-			try { if (stmt != null) stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
-		}
-		
+		} finally {	        
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }
+		return result;
 	}
 
 	public static String getWhiteList() {
@@ -82,17 +86,17 @@ public class MySQLAccess {
 			rs = stmt.executeQuery("SELECT word FROM whiteList");
 			
 			while (rs.next()) {
-				result = result+rs.getString("word");
+				result = result+rs.getString("word")+" ";
 			}
 			return result;			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return result;
 		} finally {
-			try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (stmt != null) stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
-		}
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }
 	}	
 	
 	public static String getBlackList() {
@@ -107,7 +111,7 @@ public class MySQLAccess {
 			rs = stmt.executeQuery("SELECT word FROM blackList");
 			
 			while (rs.next()) {
-				result = result+rs.getString("word");
+				result = result+rs.getString("word")+" ";
 			}
 			return result;
 			
@@ -115,10 +119,10 @@ public class MySQLAccess {
 			e.printStackTrace();
 			return result;
 		} finally {
-			try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (stmt != null) stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
-		}
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }
 	}
 	
 	public static String getSources() {
@@ -142,10 +146,10 @@ public class MySQLAccess {
 			e.printStackTrace();
 			return result;
 		} finally {
-			try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (stmt != null) stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }			
-		}
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }
 	}	
 
 	public static String getCategories() {
@@ -160,17 +164,153 @@ public class MySQLAccess {
 			rs = stmt.executeQuery("SELECT id, description FROM categories");
 			
 			while (rs.next()) {
-				result = result+rs.getString("id")+":"+rs.getString("description")+" ";
+				result = result+rs.getString("id")+"#"+rs.getString("description")+" ";
 			}
 			return result;			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return result;			
 		} finally {
-			try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (stmt != null) stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
-			try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }
+	}
+	
+	
+	public static void removeDuplicates() {
+		
+		String query = "";
+		String id="";
+		String url="";
+		String text="";
+		String row="";
+		
+		try {
 
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT id,url,text FROM news");
+			
+			while (rs.next()) {
+				id = rs.getString("id");
+				url = rs.getString("url");
+				text = rs.getString("text");
+				row = id+"\n"+url+"\n"+text;
+		
+				String md5 = calculaMD5(row);
+				
+				if (chkMD5(md5)) {
+					query = "DELETE FROM news WHERE id ="+id;
+					System.out.println(query);
+					executeUpdate(query);
+					Thread.sleep(200);
+				} else {
+					query = "INSERT INTO duplicates (newsId,hash) VALUES ("+id+",'"+md5+"')";
+					System.out.println(query);
+					executeUpdate(query);
+					Thread.sleep(200);
+				}
+			}
+			
+			query = "DELETE FROM duplicates";
+			System.out.println(query);
+			executeUpdate(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }
+	}
+	
+	public static String calculaMD5(String row) throws GeneralSecurityException {		
+		String[] parts = row.split("\n");		
+		String key = parts[1]+parts[2];
+		
+		MessageDigest m = MessageDigest.getInstance("MD5");
+	    m.update(key.getBytes(),0,key.length());
+	    
+	    BigInteger hash = new BigInteger(1, m.digest());
+		String result = hash.toString(16);	
+		
+		return result;
+	}
+	
+	public static boolean chkMD5(String md5){
+		boolean result = false;
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			
+			Connection conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT hash FROM duplicates WHERE hash ='"+md5+"'");
+			
+			if (rs.next()) {
+				result = true;
+				return result;
+			}
+			conn.close();
+			stmt.close();
+			rs.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();			
 		}
+		
+		return result;		
+	}
+	
+	public static String totalKeyWords() {
+		String result = "";
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT count(*) as total FROM whiteList");
+			
+			while (rs.next()) { result = rs.getString("total"); }
+
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }		
+
+		return result;
+	}
+	
+	public static String totalSources() {
+		String result = "";
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT count(*) as total FROM sources");
+
+			while (rs.next()) { result = rs.getString("total"); }		
+			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return result;
 	}
 }

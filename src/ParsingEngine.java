@@ -19,11 +19,17 @@ public class ParsingEngine {
 	 */
 	public static int minimumWordsInAFrase = 5;
 	public static int retries = 5;
+	public static int delay = 200;
 	
 	public static void main(String[] args) throws Exception {
-		
-		PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
-		System.setOut(out);
+		//start();		
+	}
+
+
+	public static int start() throws Exception {
+		//PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
+		//System.setOut(out);
+		int result = 0;
 		
 		String[] source = MySQLAccess.getSources().split(" ");
 		int k = 0;
@@ -32,34 +38,41 @@ public class ParsingEngine {
 			for(int i=0;i < source.length;i++) {
 				System.out.println("source[i]:"+source[i]);
 				String[] parts = source[i].split("#");
-				Elements links = getURL(parts[1]);
+				Elements links = null;
 				
-				for(int j=0;j < links.size();j++) {
-		    		if (!chkBlackList(links.get(j).text())) {
-		    			
-		    			if (links.get(j).text().split(" ").length > minimumWordsInAFrase) {
-			    			int value = num_of_keyWords(links.get(j).text()); //number of keywords occurrences
+				links = getURL(parts[1]);
+				
+				if (links != null) {
+					for(int j=0;j < links.size();j++) {
+			    		if (!chkBlackList(links.get(j).text())) {
 			    			
-			    			Date dNow = new Date( );
-			    		    SimpleDateFormat ft = 
-			    		    new SimpleDateFormat ("yyyy/MM/dd hh:mm");		    		      
-			    		      
-			    			String query = "INSERT INTO news (sourceId,url,text,value,dateCreate) VALUES ("
-			    					+parts[0]+",'"	    					
-			    					+links.get(j).attr("abs:href").replace("'", "''").replaceAll("[\\t\\n\\r]"," ")+"','"
-			    					+links.get(j).text().replace("'", "''").replaceAll("[\\t\\n\\r]"," ")+"',"
-			    					+value+",'"
-			    					+ft.format(dNow)+"')";
-			    			
-			    			MySQLAccess.executeUpdate(query);
-			    			System.out.println(k+++": "+query);
-		    			}
-		    		}
-		    	}
+			    			if (links.get(j).text().split(" ").length > minimumWordsInAFrase) {
+				    			int value = num_of_keyWords(links.get(j).text()); //number of keywords occurrences
+				    			
+				    			Date dNow = new Date( );
+				    		    SimpleDateFormat ft = 
+				    		    new SimpleDateFormat ("yyyy/MM/dd hh:mm");		    		      
+				    		      
+				    			String query = "INSERT INTO news (sourceId,url,text,value,dateCreate) VALUES ("
+				    					+parts[0]+",'"	    					
+				    					+links.get(j).attr("abs:href").replace("'", "''").replaceAll("[\\t\\n\\r]"," ")+"','"
+				    					+links.get(j).text().replace("'", "''").replaceAll("[\\t\\n\\r]"," ")+"',"
+				    					+value+",'"
+				    					+ft.format(dNow)+"')";
+				    			
+				    			if (value > 0) if (MySQLAccess.executeUpdate(query)) result++;
+				    			//MySQLAccess.executeUpdate(query);
+				    			Thread.sleep(delay);
+				    			System.out.println(k+++": "+query);
+			    			}
+			    		}
+			    	}
+				}
 			}
 		}
+		return result;
 	}
-
+	
 	public static boolean chkBlackList(String text) {		
 		String blackList = MySQLAccess.getBlackList();
 		String[] parts = blackList.split(" ");
@@ -78,11 +91,12 @@ public class ParsingEngine {
 		String whiteList = MySQLAccess.getWhiteList();
 		String[] parts = whiteList.split(" ");
 		
-		//System.out.println("processando keywords...");
-		
+		//System.out.println("processando keywords...");		
 		for (int i = 0;i < parts.length;i++) {
-			if (text.toLowerCase().contains(parts[i].toLowerCase())) count++;		
-		}
+			
+			if (text.toLowerCase().contains(parts[i].toLowerCase())) { count++; System.out.println(count+" "+parts[i].toLowerCase()+" ");}		
+		}		
+		
 		return count;
 	}
 	

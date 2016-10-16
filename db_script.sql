@@ -7,68 +7,107 @@ USE newscrawler
 
 CREATE TABLE categories (
         id INT(9) NOT NULL AUTO_INCREMENT,
+
         description VARCHAR(16),        
+        recurrenceInterval INT(9), 
+
         dateCreate VARCHAR(18),
         lastUpDate VARCHAR(18),
-        recurrenceInterval INT(9), 
+
         PRIMARY KEY (id)
 );
 
 CREATE TABLE followLists (
         id INT(9) NOT NULL AUTO_INCREMENT,
-        description VARCHAR(16),        
-        dateCreate VARCHAR(18),
-        lastUpDate VARCHAR(18),
-        
+
         categoryId INT(9),
         sourceId INT(9),
-        
+        description VARCHAR(16),        
+                
+        dateCreate VARCHAR(18),
+        lastUpDate VARCHAR(18),
+
         PRIMARY KEY (id)
 );
 
 CREATE TABLE sources (
         id INT(9) NOT NULL AUTO_INCREMENT,
-        description VARCHAR(16),        
+
+        description VARCHAR(16),
+        url VARCHAR(256),
+
         dateCreate VARCHAR(18),
         lastUpDate VARCHAR(18),
-        
-        url VARCHAR(256),
-        
+
         PRIMARY KEY (id)
 );
 
 CREATE TABLE whiteList (
         id INT(9) NOT NULL AUTO_INCREMENT,
+
         description VARCHAR(16),        
+        word VARCHAR(32),
+
         dateCreate VARCHAR(18),
         lastUpDate VARCHAR(18),
-
-        word VARCHAR(32),
 
         PRIMARY KEY (id)
 );
 
 CREATE TABLE blackList (
         id INT(9) NOT NULL AUTO_INCREMENT,
+
         description VARCHAR(16),        
+        word VARCHAR(32),
+
         dateCreate VARCHAR(18),
         lastUpDate VARCHAR(18),
-
-        word VARCHAR(32),
 
         PRIMARY KEY (id)
 );
 
 CREATE TABLE news (
         id INT(9) NOT NULL AUTO_INCREMENT,
+
         sourceId INT(9),
         url VARCHAR(512),
 	text VARCHAR(512),
         value INT(9),        	        
+
         dateCreate VARCHAR(18),
         lastUpDate VARCHAR(18),		
+
         PRIMARY KEY (id)
 );
+
+CREATE TABLE duplicates (
+        id INT(9) NOT NULL AUTO_INCREMENT,
+
+        newsId INT(9),
+        hash VARCHAR(32),
+
+        dateCreate VARCHAR(18),
+        lastUpDate VARCHAR(18),		
+
+        PRIMARY KEY (id)
+);
+
+CREATE TABLE stats (
+        id INT(9) NOT NULL AUTO_INCREMENT,
+
+        runTime VARCHAR(18),
+        crawlingTime VARCHAR(18),        
+        totalSources INT(9),
+        totalKeyWords INT(9),
+        totalNews INT(9),
+
+        dateCreate VARCHAR(18),
+        lastUpDate VARCHAR(18),		
+
+        PRIMARY KEY (id)
+);
+
+SELECT table_schema "newscrawler", Round(Sum(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB" FROM   information_schema.tables GROUP  BY table_schema; 
 
 
 INSERT INTO sources (url) VALUES ("https://sputniknews.com");
