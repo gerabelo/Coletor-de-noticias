@@ -10,26 +10,37 @@ public class Home {
 	 */
 	public static void main(String[] args) throws Exception {
 		
+		long startTime;
+		int totalNews;
+		long startRemoveDuplicatesTime;
+		long estimatedTime;
+		long estimatedParsingTime;
+		int minutes;
+		int seconds;
+		int crawlingMinutes;
+		int crawlingSeconds;
+		Date dNow;
+		
 		
 		while(true) {
-			long startTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();
 			
-			int totalNews = ParsingEngine.start("silence");
+			totalNews = ParsingEngine.start("silence");
 			
-			long startRemoveDuplicatesTime = System.currentTimeMillis();
+			startRemoveDuplicatesTime = System.currentTimeMillis();
 			
 			MySQLAccess.removeDuplicates("silence");		
 			
-			long estimatedTime = System.currentTimeMillis() - startTime;
-			long estimatedParsingTime = startRemoveDuplicatesTime - startTime;
+			estimatedTime = System.currentTimeMillis() - startTime;
+			estimatedParsingTime = startRemoveDuplicatesTime - startTime;
 			//long estimatedRemoveDuplicatesTime = endTime - startRemoveDuplicatesTime;
 			
-			int minutes = (int) (estimatedTime / (1000 * 60));
-		    int seconds = (int) ((estimatedTime / 1000) % 60);
+			minutes = (int) (estimatedTime / (1000 * 60));
+		    seconds = (int) ((estimatedTime / 1000) % 60);
 		    //int milliseconds = (int) (estimatedTime % 1000);	    
 			
-		    int crawlingMinutes = (int) (estimatedParsingTime / (1000 * 60));
-		    int crawlingSeconds = (int) ((estimatedParsingTime / 1000) % 60);
+		    crawlingMinutes = (int) (estimatedParsingTime / (1000 * 60));
+		    crawlingSeconds = (int) ((estimatedParsingTime / 1000) % 60);
 		    
 			System.out.println("crawling takes "+minutes+" crawlingMinutes and "+seconds+" crawlingSeconds");
 			System.out.println("All tasks completed in "+minutes+" minutes, "+seconds+" seconds");
@@ -42,7 +53,7 @@ public class Home {
 	
 			String crawlingTime =crawlingMinutes+":"+crawlingSeconds;
 			
-			Date dNow = new Date( );
+			dNow = new Date( );
 		    SimpleDateFormat ft = new SimpleDateFormat ("yyyy/MM/dd hh:mm");
 		    
 		    query = "INSERT INTO stats (runTime,crawlingTime,totalSources,totalKeyWords,totalNews,dateCreate) VALUES ('"
