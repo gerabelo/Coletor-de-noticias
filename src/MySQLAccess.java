@@ -67,7 +67,9 @@ public class MySQLAccess {
 //			}	
 			result = true;
 		} catch (Exception e) {
+			System.out.println("");
 			System.out.println(query);
+			System.out.println("");
 			e.printStackTrace();
 			
 		} finally {	        
