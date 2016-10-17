@@ -25,25 +25,26 @@ public class Home {
 		while(true) {
 			startTime = System.currentTimeMillis();
 			
-			totalNews = ParsingEngine.start("silence");
+			totalNews = ParsingEngine.start("silence");			
 			
-			startRemoveDuplicatesTime = System.currentTimeMillis();
+			estimatedParsingTime = System.currentTimeMillis() - startTime;
+		    
+			crawlingMinutes = (int) (estimatedParsingTime / (1000 * 60));
+		    crawlingSeconds = (int) ((estimatedParsingTime / 1000) % 60);		    
+		    
+		    System.out.println("crawling takes "+crawlingMinutes+" minutes and "+crawlingSeconds+" seconds");			
 			
 			MySQLAccess.removeDuplicates("silence");		
 			
 			estimatedTime = System.currentTimeMillis() - startTime;
-			estimatedParsingTime = startRemoveDuplicatesTime - startTime;
 			//long estimatedRemoveDuplicatesTime = endTime - startRemoveDuplicatesTime;
 			
 			minutes = (int) (estimatedTime / (1000 * 60));
 		    seconds = (int) ((estimatedTime / 1000) % 60);
-		    //int milliseconds = (int) (estimatedTime % 1000);	    
-			
-		    crawlingMinutes = (int) (estimatedParsingTime / (1000 * 60));
-		    crawlingSeconds = (int) ((estimatedParsingTime / 1000) % 60);
+		    //int milliseconds = (int) (estimatedTime % 1000);			
 		    
-			System.out.println("crawling takes "+minutes+" crawlingMinutes and "+seconds+" crawlingSeconds");
-			System.out.println("All tasks completed in "+minutes+" minutes, "+seconds+" seconds");
+		    System.out.println("");
+		    System.out.println("All tasks completed in "+minutes+" minutes, "+seconds+" seconds");
 			
 			String query = "";
 			String runTime = minutes+":"+seconds;

@@ -89,7 +89,7 @@ public class MySQLAccess {
 			rs = stmt.executeQuery("SELECT word FROM whiteList");
 			
 			while (rs.next()) {
-				result = result+rs.getString("word")+" ";
+				result = result+rs.getString("word")+"#";
 			}
 			return result;			
 		} catch (Exception e) {
@@ -114,7 +114,7 @@ public class MySQLAccess {
 			rs = stmt.executeQuery("SELECT word FROM blackList");
 			
 			while (rs.next()) {
-				result = result+rs.getString("word")+" ";
+				result = result+rs.getString("word")+"#";
 			}
 			return result;
 			
@@ -210,13 +210,13 @@ public class MySQLAccess {
 				if (chkMD5(md5)) {
 					query = "DELETE FROM news WHERE id ="+id;
 					if (debug) System.out.println(query);
-					else System.out.print(".");
+					else System.out.print("-");
 					executeUpdate(query);
 					Thread.sleep(200);
 				} else {
 					query = "INSERT INTO duplicates (newsId,hash) VALUES ("+id+",'"+md5+"')";
 					if (debug) System.out.println(query);
-					else System.out.print(".");
+					else System.out.print("+");
 					executeUpdate(query);
 					Thread.sleep(200);
 				}

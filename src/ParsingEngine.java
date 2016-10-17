@@ -33,6 +33,10 @@ public class ParsingEngine {
 		//System.setOut(out);
 		int result = 0;
 		int partial = 0;
+		long startTime;
+		long estimatedTime;
+		int minutes;
+		int seconds;
 		
 		String[] source = MySQLAccess.getSources().split(" ");
 		int k = 0;
@@ -41,8 +45,13 @@ public class ParsingEngine {
 			for(int i=0;i < source.length;i++) {
 				partial = 0;
 				//System.out.println("source[i]:"+source[i]);
+				
+				startTime = System.currentTimeMillis();
+				
 				String[] parts = source[i].split("#");
 				Elements links = null;
+				
+				int totalKeyWords = 0;
 				
 				links = getURL(parts[1]);
 				
@@ -71,12 +80,20 @@ public class ParsingEngine {
 				    			if (debug) System.out.println(k+": "+query);
 				    			else System.out.print(".");
 				    			k++;
+				    			totalKeyWords = totalKeyWords+value; 
 			    			}
 			    		}
 			    	}
 				}
+				estimatedTime = System.currentTimeMillis() - startTime;				
 				System.out.println("");
-				System.out.println(partial+" links founds on "+source[i]);
+				System.out.print(totalKeyWords+" keywords founds in "+partial+" links in "+source[i]);			    
+				minutes = (int) (estimatedTime / (1000 * 60));
+			    seconds = (int) ((estimatedTime / 1000) % 60);
+			    if (partial > 0) {
+				    if (minutes > 0) System.out.print(" in "+minutes+" minutes and "+seconds+" seconds");
+				    else System.out.print(" in "+seconds+" seconds");
+			    }
 				System.out.println("");
 			}
 		}
@@ -85,7 +102,7 @@ public class ParsingEngine {
 	
 	public static boolean chkBlackList(String text) {		
 		String blackList = MySQLAccess.getBlackList();
-		String[] parts = blackList.split(" ");
+		String[] parts = blackList.split("#");
 		
 		//System.out.println("blacklist...");
 		
@@ -99,7 +116,7 @@ public class ParsingEngine {
 		int count = 0;
 		
 		String whiteList = MySQLAccess.getWhiteList();
-		String[] parts = whiteList.split(" ");
+		String[] parts = whiteList.split("#");
 		
 		//System.out.println("processando keywords...");		
 		for (int i = 0;i < parts.length;i++) {
