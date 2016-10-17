@@ -40,7 +40,7 @@ public class ParsingEngine {
 		if (source.length > 0) {		
 			for(int i=0;i < source.length;i++) {
 				partial = 0;
-				System.out.println("source[i]:"+source[i]);
+				//System.out.println("source[i]:"+source[i]);
 				String[] parts = source[i].split("#");
 				Elements links = null;
 				
