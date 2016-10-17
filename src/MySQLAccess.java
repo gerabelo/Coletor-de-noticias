@@ -199,6 +199,11 @@ public class MySQLAccess {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT id,url,text FROM news");
 			
+			query = "DELETE FROM duplicates";
+			if (debug) System.out.println(query);
+			else System.out.print(".");
+			executeUpdate(query);
+			
 			while (rs.next()) {
 				id = rs.getString("id");
 				url = rs.getString("url");
@@ -222,11 +227,8 @@ public class MySQLAccess {
 				}
 			}
 			
-			query = "DELETE FROM duplicates";
-			if (debug) System.out.println(query);
-			else System.out.print(".");
 			
-			executeUpdate(query);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
