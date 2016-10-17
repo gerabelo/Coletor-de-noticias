@@ -150,7 +150,8 @@ public class ParsingEngine {
 	    
 	    while (i < retries) {
 		    try {
-		    	if (i > 0) System.out.println("retrying..."+i);
+		    	//if (i > 0) System.out.print("retrying..."+i);
+		    	if (i > 0) System.out.print("!");
 	   			if (!url.startsWith("http://") && !url.startsWith("https://"))	url = "http://"+url;	    			    
 		    	
 		    	document = Jsoup.connect(url)
