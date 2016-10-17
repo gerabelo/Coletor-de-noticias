@@ -11,7 +11,7 @@ import java.sql.Statement;
 
 public class MySQLAccess {
 	
-	private static String connectionUrl = "jdbc:mysql://127.0.0.1/webbot?autoReconnect=true&useSSL=false";			
+	private static String connectionUrl = "jdbc:mysql://127.0.0.1/newscrawler?autoReconnect=true&useSSL=false";			
 	private static String connectionUser = "root";
 	private static String connectionPassword = "123456";
 	
@@ -185,7 +185,7 @@ public class MySQLAccess {
 	
 	public static void removeDuplicates(String arg) {
 		
-		if (arg.matches("debug")) debug = true;
+		if (arg == "debug") debug = true;
 		
 		String query = "";
 		String id="";
@@ -197,9 +197,10 @@ public class MySQLAccess {
 
 			Class.forName("com.mysql.jdbc.Driver").newInstance();			
 			
-			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT id,url,text FROM news");
+			Connection conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT id,url,text FROM news");
+			
 			
 			query = "DELETE FROM duplicates";
 			if (debug) System.out.println(query);
@@ -229,14 +230,15 @@ public class MySQLAccess {
 				}
 			}
 			
+			conn.close();
+			stmt.close();
+			rs.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
-	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
-	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
-	    }
+		} 
 	}
+	
 	
 	public static String calculaMD5(String row) throws GeneralSecurityException {		
 		String[] parts = row.split("\n");		

@@ -10,6 +10,8 @@ public class Home {
 	 */
 	public static void main(String[] args) throws Exception {
 		
+		//System.out.println(MySQLAccess.totalSources());
+		
 		long startTime;
 		int totalNews;
 		//long startRemoveDuplicatesTime;
@@ -27,15 +29,6 @@ public class Home {
 			
 			totalNews = ParsingEngine.start("silence");			
 			
-			estimatedParsingTime = System.currentTimeMillis() - startTime;
-		    
-			crawlingMinutes = (int) (estimatedParsingTime / (1000 * 60));
-		    crawlingSeconds = (int) ((estimatedParsingTime / 1000) % 60);		    
-		    
-		    System.out.println("crawling takes "+crawlingMinutes+" minutes and "+crawlingSeconds+" seconds");			
-			
-			MySQLAccess.removeDuplicates("silence");		
-			
 			estimatedTime = System.currentTimeMillis() - startTime;
 			//long estimatedRemoveDuplicatesTime = endTime - startRemoveDuplicatesTime;
 			
@@ -51,19 +44,18 @@ public class Home {
 			
 			String totalSources = MySQLAccess.totalSources();
 			String totalKeyWords  = MySQLAccess.totalKeyWords();		
-	
-			String crawlingTime =crawlingMinutes+":"+crawlingSeconds;
-			
+
 			dNow = new Date( );
 		    SimpleDateFormat ft = new SimpleDateFormat ("yyyy/MM/dd hh:mm");
 		    
-		    query = "INSERT INTO stats (runTime,crawlingTime,totalSources,totalKeyWords,totalNews,dateCreate) VALUES ('"
-					+runTime+"','"+crawlingTime+"','"+totalSources+"','"+totalKeyWords+"','"+totalNews+"','"+ft.format(dNow)+"')";
+		    query = "INSERT INTO stats (runTime,totalSources,totalKeyWords,totalNews,dateCreate) VALUES ('"
+					+runTime+"','"+totalSources+"','"+totalKeyWords+"','"+totalNews+"','"+ft.format(dNow)+"')";
 			
 		    //System.out.println(query);
 		    
 		    MySQLAccess.executeUpdate(query);
 		}
+		
 	}
 
 }

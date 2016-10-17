@@ -18,7 +18,7 @@ public class ParsingEngine {
 	 * @throws Exception 
 	 */
 	public static int minimumWordsInAFrase = 5;
-	public static int retries = 5;
+	public static int retries = 10;
 	public static int delay = 200;
 	public static boolean debug = false;
 	
@@ -28,7 +28,7 @@ public class ParsingEngine {
 
 
 	public static int start(String arg) throws Exception {		
-		if (arg.matches("debug")) debug = true; 
+		if (arg == "debug") debug = true; 
 		//PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
 		//System.setOut(out);
 		int result = 0;
@@ -37,6 +37,10 @@ public class ParsingEngine {
 		long estimatedTime;
 		int minutes;
 		int seconds;
+		
+		String hash;
+		String url;
+		String text;
 		
 		String[] source = MySQLAccess.getSources().split(" ");
 		int k = 0;
@@ -52,42 +56,54 @@ public class ParsingEngine {
 				Elements links = null;
 				
 				int totalKeyWords = 0;
+				int totalLinks = 0;
 				
-				links = getURL(parts[1]);
-				
-				if (links != null) {
-					for(int j=0;j < links.size();j++) {
-			    		if (!chkBlackList(links.get(j).text())) {
-			    			
-			    			if (links.get(j).text().split(" ").length > minimumWordsInAFrase) {
-				    			int value = num_of_keyWords(links.get(j).text()); //number of keywords occurrences
+				try {
+					
+					links = getURL(parts[1]);
+					totalLinks = links.size();
+					
+					if (links != null) {
+						for(int j=0;j < totalLinks;j++) {
+				    		if (!chkBlackList(links.get(j).text())) {
 				    			
-				    			Date dNow = new Date( );
-				    		    SimpleDateFormat ft = 
-				    		    new SimpleDateFormat ("yyyy/MM/dd hh:mm");		    		      
-				    		      
-				    			String query = "INSERT INTO news (sourceId,url,text,value,dateCreate) VALUES ("
-				    					+parts[0]+",'"	    					
-				    					+links.get(j).attr("abs:href").replace("'", "''").replaceAll("[\\t\\n\\r]"," ")+"','"
-				    					+links.get(j).text().replace("'", "''").replaceAll("[\\t\\n\\r]"," ")+"',"
-				    					+value+",'"
-				    					+ft.format(dNow)+"')";
-				    			
-				    			if (value > 0) if (MySQLAccess.executeUpdate(query)) { result++; partial++;}
-				    			//if (MySQLAccess.executeUpdate(query)) result++; partial++;
-				    			Thread.sleep(delay);
-				    			
-				    			if (debug) System.out.println(k+": "+query);
-				    			else System.out.print(".");
-				    			k++;
-				    			totalKeyWords = totalKeyWords+value; 
-			    			}
-			    		}
-			    	}
+				    			if (links.get(j).text().split(" ").length > minimumWordsInAFrase) {
+					    			int value = num_of_keyWords(links.get(j).text()); //number of keywords occurrences
+					    			
+					    			Date dNow = new Date( );
+					    		    SimpleDateFormat ft = 
+					    		    new SimpleDateFormat ("yyyy/MM/dd hh:mm");
+					    		    
+					    		    url = links.get(j).attr("abs:href").replace("'", "''").replaceAll("[\\t\\n\\r]"," ");
+					    		    text = links.get(j).text().replace("'", "''").replaceAll("[\\t\\n\\r]"," ");
+					    		    hash = MySQLAccess.calculaMD5("0\n"+url+"\n"+text+"\n");  
+					    		    
+					    			String query = "INSERT INTO news (sourceId,url,text,value,dateCreate,hash) VALUES ("
+					    					+parts[0]+",'"	    					
+					    					+url+"','"
+					    					+text+"',"
+					    					+value+",'"
+					    					+ft.format(dNow)+"','"
+					    					+hash+"')";
+					    			
+					    			//if (value > 0) if (MySQLAccess.executeUpdate(query)) { result++; partial++;}
+					    			if (MySQLAccess.executeUpdate(query)) { result++; partial++; }
+					    			Thread.sleep(delay);
+					    			
+					    			if (debug) System.out.println(k+": "+query);
+					    			else System.out.print(".");
+					    			k++;
+					    			totalKeyWords = totalKeyWords+value; 
+				    			}
+				    		}
+				    	}
+					}
+				} catch (Exception e) {
+					
 				}
 				estimatedTime = System.currentTimeMillis() - startTime;				
 				System.out.println("");
-				System.out.print(totalKeyWords+" keywords founds in "+partial+" links in "+source[i]);			    
+				System.out.print(totalKeyWords+" keywords found in "+partial+" of "+totalLinks+" links in "+source[i]);			    
 				minutes = (int) (estimatedTime / (1000 * 60));
 			    seconds = (int) ((estimatedTime / 1000) % 60);
 			    if (partial > 0) {
