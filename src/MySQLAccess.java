@@ -229,8 +229,6 @@ public class MySQLAccess {
 				}
 			}
 			
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -259,22 +257,22 @@ public class MySQLAccess {
 
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			
-			Connection conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT hash FROM duplicates WHERE hash ='"+md5+"'");
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT hash FROM duplicates WHERE hash ='"+md5+"'");
 			
 			if (rs.next()) {
 				result = true;
 				return result;
 			}
-			conn.close();
-			stmt.close();
-			rs.close();
 			
 		} catch (Exception e) {
 			e.printStackTrace();			
-		}
-		
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }		
 		return result;		
 	}
 	

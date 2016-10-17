@@ -12,7 +12,7 @@ public class Home {
 		
 		long startTime;
 		int totalNews;
-		long startRemoveDuplicatesTime;
+		//long startRemoveDuplicatesTime;
 		long estimatedTime;
 		long estimatedParsingTime;
 		int minutes;
