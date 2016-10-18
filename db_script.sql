@@ -34,7 +34,7 @@ CREATE TABLE sources (
         id INT(9) NOT NULL AUTO_INCREMENT,
 
         description VARCHAR(16),
-        url VARCHAR(256),
+        url VARCHAR(256) UNIQUE,
 
         dateCreate VARCHAR(18),
         lastUpDate VARCHAR(18),
@@ -46,7 +46,7 @@ CREATE TABLE whiteList (
         id INT(9) NOT NULL AUTO_INCREMENT,
 
         description VARCHAR(16),        
-        word VARCHAR(32),
+        word VARCHAR(32) UNIQUE,
 
         dateCreate VARCHAR(18),
         lastUpDate VARCHAR(18),
@@ -110,7 +110,6 @@ CREATE TABLE stats (
 );
 
 SELECT table_schema "newscrawler", Round(Sum(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB" FROM   information_schema.tables GROUP  BY table_schema; 
-
 
 INSERT INTO sources (url) VALUES ("https://sputniknews.com");                    
 INSERT INTO sources (url) VALUES ("https://www.rt.com");                         
@@ -180,6 +179,8 @@ INSERT INTO sources (url) VALUES ("phys.org");
 INSERT INTO sources (url) VALUES ("https://science.nasa.gov/science-news");      
 INSERT INTO sources (url) VALUES ("https://twitter.com/sciencenews");            
 INSERT INTO sources (url) VALUES ("www.nature.com");
+INSERT INTO sources (url) VALUES ("http://www.lemonde.fr/");
+INSERT INTO sources (url) VALUES ("http://www.pravda.ru/");
 
 
 INSERT INTO categories (description,recurrenceInterval) VALUES ("política",10);
@@ -187,34 +188,117 @@ INSERT INTO categories (description,recurrenceInterval) VALUES ("tecnologia",10)
 INSERT INTO categories (description,recurrenceInterval) VALUES ("conflitos",10);
 
 INSERT INTO whiteList (word) VALUES ("parfor");
-INSERT INTO whiteList (word) VALUES ("war");
-INSERT INTO whiteList (word) VALUES ("guerra");
-INSERT INTO whiteList (word) VALUES ("russia");
-INSERT INTO whiteList (word) VALUES ("violenc");
-INSERT INTO whiteList (word) VALUES ("violência");
-INSERT INTO whiteList (word) VALUES ("breaking");
-INSERT INTO whiteList (word) VALUES ("peace");
-INSERT INTO whiteList (word) VALUES ("riot");
-INSERT INTO whiteList (word) VALUES ("technology");
-INSERT INTO whiteList (word) VALUES ("tecnologia");
-INSERT INTO whiteList (word) VALUES ("protesto");
-INSERT INTO whiteList (word) VALUES ("morte");
-INSERT INTO whiteList (word) VALUES ("acidente");
-INSERT INTO whiteList (word) VALUES ("murder");
-INSERT INTO whiteList (word) VALUES ("dead");
-INSERT INTO whiteList (word) VALUES ("crime");
-INSERT INTO whiteList (word) VALUES ("strategic");
-INSERT INTO whiteList (word) VALUES ("estratégia");
-INSERT INTO whiteList (word) VALUES ("estrategia");
-INSERT INTO whiteList (word) VALUES ("perigo");
-INSERT INTO whiteList (word) VALUES ("danger");
-INSERT INTO whiteList (word) VALUES ("ameaça");
-INSERT INTO whiteList (word) VALUES ("warning");
-INSERT INTO whiteList (word) VALUES ("global");
-INSERT INTO whiteList (word) VALUES ("crash");
-INSERT INTO whiteList (word) VALUES ("clash");
-INSERT INTO whiteList (word) VALUES ("ISIS");
-INSERT INTO whiteList (word) VALUES ("daesh");
+INSERT INTO whiteList (word) VALUES ("war");         
+INSERT INTO whiteList (word) VALUES ("guerra");      
+INSERT INTO whiteList (word) VALUES ("russia");      
+INSERT INTO whiteList (word) VALUES ("violenc");     
+INSERT INTO whiteList (word) VALUES ("violência");   
+INSERT INTO whiteList (word) VALUES ("breaking");    
+INSERT INTO whiteList (word) VALUES ("peace");       
+INSERT INTO whiteList (word) VALUES ("riot");        
+INSERT INTO whiteList (word) VALUES ("technology");  
+INSERT INTO whiteList (word) VALUES ("tecnologia");  
+INSERT INTO whiteList (word) VALUES ("protesto");    
+INSERT INTO whiteList (word) VALUES ("morte");       
+INSERT INTO whiteList (word) VALUES ("acidente");    
+INSERT INTO whiteList (word) VALUES ("murder");      
+INSERT INTO whiteList (word) VALUES ("dead");        
+INSERT INTO whiteList (word) VALUES ("crime");       
+INSERT INTO whiteList (word) VALUES ("strategic");   
+INSERT INTO whiteList (word) VALUES ("estratégia");  
+INSERT INTO whiteList (word) VALUES ("estrategia");  
+INSERT INTO whiteList (word) VALUES ("perigo");            
+INSERT INTO whiteList (word) VALUES ("ameaça");      
+INSERT INTO whiteList (word) VALUES ("global");      
+INSERT INTO whiteList (word) VALUES ("crash");       
+INSERT INTO whiteList (word) VALUES ("clash");       
+INSERT INTO whiteList (word) VALUES ("ISIS");        
+INSERT INTO whiteList (word) VALUES ("daesh");       
+INSERT INTO whiteList (word) VALUES ("Dilma");       
+INSERT INTO whiteList (word) VALUES ("Lula");        
+INSERT INTO whiteList (word) VALUES ("Delação");     
+INSERT INTO whiteList (word) VALUES ("Prisão");      
+INSERT INTO whiteList (word) VALUES ("Operação");    
+INSERT INTO whiteList (word) VALUES ("Bilhão");      
+INSERT INTO whiteList (word) VALUES ("Terror");      
+INSERT INTO whiteList (word) VALUES ("Left-wing");   
+INSERT INTO whiteList (word) VALUES ("Right-wing");  
+INSERT INTO whiteList (word) VALUES ("eleições");    
+INSERT INTO whiteList (word) VALUES ("elections");   
+INSERT INTO whiteList (word) VALUES ("attack");      
+INSERT INTO whiteList (word) VALUES ("ataque");      
+INSERT INTO whiteList (word) VALUES ("bomb");        
+INSERT INTO whiteList (word) VALUES ("atentado");    
+INSERT INTO whiteList (word) VALUES ("imposto");     
+INSERT INTO whiteList (word) VALUES ("brics");       
+INSERT INTO whiteList (word) VALUES ("hostage");     
+INSERT INTO whiteList (word) VALUES ("refem");       
+INSERT INTO whiteList (word) VALUES ("petrobras");   
+INSERT INTO whiteList (word) VALUES ("reféns");      
+INSERT INTO whiteList (word) VALUES ("snowden");     
+INSERT INTO whiteList (word) VALUES ("wikileaks");   
+INSERT INTO whiteList (word) VALUES ("threats");     
+INSERT INTO whiteList (word) VALUES ("obama");       
+INSERT INTO whiteList (word) VALUES ("clinton");     
+INSERT INTO whiteList (word) VALUES ("president");   
+INSERT INTO whiteList (word) VALUES ("senator");     
+INSERT INTO whiteList (word) VALUES ("senador");     
+INSERT INTO whiteList (word) VALUES ("deputado");    
+INSERT INTO whiteList (word) VALUES ("engenharia");  
+INSERT INTO whiteList (word) VALUES (" engineering"); 
+INSERT INTO whiteList (word) VALUES ("protesters");  
+INSERT INTO whiteList (word) VALUES ("gaza");        
+INSERT INTO whiteList (word) VALUES ("palestine");   
+INSERT INTO whiteList (word) VALUES ("israel");      
+INSERT INTO whiteList (word) VALUES ("syria");       
+INSERT INTO whiteList (word) VALUES ("siria");       
+INSERT INTO whiteList (word) VALUES ("ceasefire");   
+INSERT INTO whiteList (word) VALUES ("pentagon");    
+INSERT INTO whiteList (word) VALUES ("assange");     
+INSERT INTO whiteList (word) VALUES ("exonera");     
+INSERT INTO whiteList (word) VALUES ("manaus");      
+INSERT INTO whiteList (word) VALUES ("earthquake");  
+INSERT INTO whiteList (word) VALUES ("terremoto");   
+INSERT INTO whiteList (word) VALUES ("catastrofe");  
+INSERT INTO whiteList (word) VALUES ("cessar-fogo"); 
+INSERT INTO whiteList (word) VALUES ("bolsonaro");   
+INSERT INTO whiteList (word) VALUES ("estudo");      
+INSERT INTO whiteList (word) VALUES ("study");       
+INSERT INTO whiteList (word) VALUES ("tiroteio");    
+INSERT INTO whiteList (word) VALUES ("shootout");    
+INSERT INTO whiteList (word) VALUES ("rebel");       
+INSERT INTO whiteList (word) VALUES ("FHC");         
+INSERT INTO whiteList (word) VALUES (" AI");         
+INSERT INTO whiteList (word) VALUES ("discover");    
+INSERT INTO whiteList (word) VALUES ("parfor");      
+INSERT INTO whiteList (word) VALUES ("war");         
+INSERT INTO whiteList (word) VALUES ("guerra");      
+INSERT INTO whiteList (word) VALUES ("russia");      
+INSERT INTO whiteList (word) VALUES ("violenc");     
+INSERT INTO whiteList (word) VALUES ("violência");   
+INSERT INTO whiteList (word) VALUES ("breaking");    
+INSERT INTO whiteList (word) VALUES ("peace");       
+INSERT INTO whiteList (word) VALUES ("riot");        
+INSERT INTO whiteList (word) VALUES ("technology");  
+INSERT INTO whiteList (word) VALUES ("tecnologia");  
+INSERT INTO whiteList (word) VALUES ("protesto");    
+INSERT INTO whiteList (word) VALUES ("morte");       
+INSERT INTO whiteList (word) VALUES ("acidente");    
+INSERT INTO whiteList (word) VALUES ("murder");      
+INSERT INTO whiteList (word) VALUES ("dead");        
+INSERT INTO whiteList (word) VALUES ("crime");       
+INSERT INTO whiteList (word) VALUES ("strategic");   
+INSERT INTO whiteList (word) VALUES ("estratégia");  
+INSERT INTO whiteList (word) VALUES ("estrategia");  
+INSERT INTO whiteList (word) VALUES ("perigo");      
+INSERT INTO whiteList (word) VALUES ("danger");      
+INSERT INTO whiteList (word) VALUES ("ameaça");      
+INSERT INTO whiteList (word) VALUES ("warning");     
+INSERT INTO whiteList (word) VALUES ("global");      
+INSERT INTO whiteList (word) VALUES ("crash");       
+INSERT INTO whiteList (word) VALUES ("clash");       
+INSERT INTO whiteList (word) VALUES ("ISIS");        
+INSERT INTO whiteList (word) VALUES ("daesh");       
 
 INSERT INTO blackList (word) VALUES ("promoção");
 INSERT INTO blackList (word) VALUES ("ganhe");
