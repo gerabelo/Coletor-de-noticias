@@ -16,11 +16,10 @@ public class Home {
 		int totalNews;
 		//long startRemoveDuplicatesTime;
 		long estimatedTime;
-		long estimatedParsingTime;
+		
 		int minutes;
 		int seconds;
-		int crawlingMinutes;
-		int crawlingSeconds;
+		
 		Date dNow;
 		
 		

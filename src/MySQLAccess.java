@@ -67,10 +67,10 @@ public class MySQLAccess {
 //			}	
 			result = true;
 		} catch (Exception e) {
-			System.out.println("");
-			System.out.println(query);
-			System.out.println("");
-			e.printStackTrace();
+			System.out.print(",");
+			//System.out.println(query);
+			//System.out.println("");
+			//e.printStackTrace();
 			
 		} finally {	        
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}

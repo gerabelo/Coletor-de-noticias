@@ -33,6 +33,8 @@ public class ParsingEngine {
 		//System.setOut(out);
 		int result = 0;
 		int partial = 0;
+		int add = 0;
+		
 		long startTime;
 		long estimatedTime;
 		int minutes;
@@ -48,6 +50,7 @@ public class ParsingEngine {
 		if (source.length > 0) {		
 			for(int i=0;i < source.length;i++) {
 				partial = 0;
+				add = 0;
 				//System.out.println("source[i]:"+source[i]);
 				
 				startTime = System.currentTimeMillis();
@@ -62,6 +65,7 @@ public class ParsingEngine {
 					
 					links = getURL(parts[1]);
 					totalLinks = links.size();
+					result = result + totalLinks;
 					
 					if (links != null) {
 						for(int j=0;j < totalLinks;j++) {
@@ -87,7 +91,8 @@ public class ParsingEngine {
 					    					+hash+"')";
 					    			
 					    			//if (value > 0) if (MySQLAccess.executeUpdate(query)) { result++; partial++;}
-					    			if (MySQLAccess.executeUpdate(query)) { result++; partial++; }
+					    			partial++;
+					    			if (MySQLAccess.executeUpdate(query)) { add++; }
 					    			Thread.sleep(delay);
 					    			
 					    			if (debug) System.out.println(k+": "+query);
@@ -103,7 +108,7 @@ public class ParsingEngine {
 				}
 				estimatedTime = System.currentTimeMillis() - startTime;				
 				System.out.println("");
-				System.out.print(totalKeyWords+" keywords found in "+partial+" of "+totalLinks+" links in "+source[i]);			    
+				System.out.print(totalKeyWords+" keywords found in "+partial+" of "+totalLinks+" links in "+source[i]+" "+add+" added");			    
 				minutes = (int) (estimatedTime / (1000 * 60));
 			    seconds = (int) ((estimatedTime / 1000) % 60);
 			    if (partial > 0) {
