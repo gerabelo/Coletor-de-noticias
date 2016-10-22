@@ -22,6 +22,8 @@ public class Home {
 		
 		Date dNow;
 		
+		int contadordeexecucoes = 1;
+		
 		
 		while(true) {
 			startTime = System.currentTimeMillis();

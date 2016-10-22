@@ -448,5 +448,33 @@ public class MySQLAccess {
 		
 		return result;		
 	}
+	
+	public static String getIgnoreds() {
+		String result = "";
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT word FROM ignoreds");
+			
+			while (rs.next()) {
+				result = result+rs.getString("word")+"#";
+				//System.out.println(result);
+			}			
+			return result;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return result;
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    }
+	}	
+
 
 }
