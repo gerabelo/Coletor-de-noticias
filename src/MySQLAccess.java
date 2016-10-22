@@ -327,7 +327,7 @@ public class MySQLAccess {
 		return result;
 	}
 	
-	public static String getTextFromId(int id) {
+	public static String getTextFromNewsId(int id) {
 		String result = "";
 		
 		try {
@@ -423,4 +423,30 @@ public class MySQLAccess {
 	    } 		
 		//return result;		
 	}
+	
+	public static int isInIgnoredsTable(String word) {
+		int result = 0;
+		String query = "";
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			query = "SELECT count(*) as total FROM ignoreds WHERE word = '"+word+"'";
+			rs = stmt.executeQuery(query);
+
+			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return result;		
+	}
+
 }

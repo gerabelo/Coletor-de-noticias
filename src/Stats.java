@@ -31,13 +31,16 @@ public class Stats {
 		
 		for (int i=0;i < words.length ; i++) {
 			words[i] = words[i].toLowerCase().replace("'", "`");
-			
-			if (MySQLAccess.isInModaTable(words[i]) > 0) {
-				MySQLAccess.incrementWordCounter(words[i]);
+			if (MySQLAccess.isInIgnoredsTable(words[i]) == 0) {	
+				if (MySQLAccess.isInModaTable(words[i]) > 0) {
+					MySQLAccess.incrementWordCounter(words[i]);
+				} else {
+					query = "INSERT INTO moda (word,counter) VALUES ('"+words[i]+"',1)";
+					System.out.println(query);
+					MySQLAccess.executeUpdate(query);
+				}
 			} else {
-				query = "INSERT INTO moda (word,counter) VALUES ('"+words[i]+"',1)";
-				System.out.println(query);
-				MySQLAccess.executeUpdate(query);
+				System.out.println("ignoring "+words[i]);
 			}
 		}		
 		return result;

@@ -103,9 +103,19 @@ CREATE TABLE moda (
 
         word VARCHAR(32),
         counter INT(9),
+        status INT(1),
 
         PRIMARY KEY (id)
 );
+
+CREATE TABLE ignoreds (
+        id INT(9) NOT NULL AUTO_INCREMENT,        
+
+        word VARCHAR(16) UNIQUE,
+        PRIMARY KEY (id)        
+);
+
+INSERT INTO ignoreds (word) VALUES ('
 
 
 SELECT table_schema "newscrawler", Round(Sum(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB" FROM   information_schema.tables GROUP  BY table_schema; 
