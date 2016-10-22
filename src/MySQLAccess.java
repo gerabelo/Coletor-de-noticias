@@ -326,4 +326,101 @@ public class MySQLAccess {
 		
 		return result;
 	}
+	
+	public static String getTextFromId(int id) {
+		String result = "";
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT text FROM news WHERE id="+id);
+
+			while (rs.next()) { result = rs.getString("text"); }		
+			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return result;
+	}
+	
+	public static int getTotalNews() {
+		int result = 0;
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT count(*) as total FROM news");
+
+			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }		
+			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return result;
+	}
+	
+	public static int isInModaTable(String word) {
+		int result = 0;
+		String query = "";
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			query = "SELECT count(*) as total FROM moda WHERE word = '"+word+"'";
+			rs = stmt.executeQuery(query);
+
+			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return result;		
+	}
+
+	public static boolean incrementWordCounter(String word) {
+		String query = "";
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			query = "UPDATE moda SET counter = counter+1 WHERE word='"+word+"'";
+			System.out.println(query);
+			stmt.executeUpdate(query);
+			return true;
+		} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+		} finally {
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}	        
+	    } 		
+		//return result;		
+	}
 }
