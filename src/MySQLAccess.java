@@ -377,7 +377,7 @@ public class MySQLAccess {
 		return result;
 	}
 	
-	public static int isInModaTable(String word) {
+	public static int isInModaTable(String word, String data) {
 		int result = 0;
 		String query = "";
 		try {
@@ -386,7 +386,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			query = "SELECT count(*) as total FROM moda WHERE word = '"+word+"'";
+			query = "SELECT count(*) as total FROM moda WHERE word = '"+word+"' AND dateCreate = '"+data+"'";
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }			
@@ -411,7 +411,7 @@ public class MySQLAccess {
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
 			query = "UPDATE moda SET counter = counter+1 WHERE word='"+word+"'";
-			System.out.println(query);
+			//System.out.println(query);
 			stmt.executeUpdate(query);
 			return true;
 		} catch (Exception e) {
