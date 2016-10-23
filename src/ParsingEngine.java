@@ -76,7 +76,7 @@ public class ParsingEngine {
 					    			
 					    			Date dNow = new Date( );
 					    		    SimpleDateFormat ft = 
-					    		    new SimpleDateFormat ("yyyy/MM/dd HH:mm aa");
+					    		    new SimpleDateFormat ("yyyy/MM/dd HH:mm");
 					    		    
 					    		    url = links.get(j).attr("abs:href").replace("'", "''").replaceAll("[\\t\\n\\r]"," ");
 					    		    text = links.get(j).text().replace("'", "''").replaceAll("[\\t\\n\\r]"," ");
