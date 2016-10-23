@@ -47,7 +47,7 @@ public class Home {
 			String totalKeyWords  = MySQLAccess.totalKeyWords();		
 
 			dNow = new Date( );
-		    SimpleDateFormat ft = new SimpleDateFormat ("yyyy/MM/dd hh:mm");
+		    SimpleDateFormat ft = new SimpleDateFormat ("yyyy/MM/dd HH:mm");
 		    
 		    query = "INSERT INTO stats (runTime,totalSources,totalKeyWords,totalNews,dateCreate) VALUES ('"
 					+runTime+"','"+totalSources+"','"+totalKeyWords+"','"+totalNews+"','"+ft.format(dNow)+"')";
