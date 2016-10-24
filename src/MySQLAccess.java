@@ -377,6 +377,32 @@ public class MySQLAccess {
 		return result;
 	}
 	
+
+	public static int getNewsByDate(String data) {
+		int result = 0;
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreate='"+data+"'");
+
+			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }		
+			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return result;
+	}
+
 	public static int isInModaTable(String word, String data) {
 		int result = 0;
 		String query = "";

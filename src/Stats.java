@@ -8,11 +8,17 @@ public class Stats {
 	 * @param args
 	 */
 	public static String ignoreds = "";
+	public static String data = "";
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Date dNow = new Date( );
+	    SimpleDateFormat ft = 
+	    new SimpleDateFormat ("yyyy/MM/dd");
+	    data = ft.format(dNow);
+	    
 		int newsId = 0;
-		int dbSize = MySQLAccess.getTotalNews();
+		int dbSize = MySQLAccess.getNewsByDate(data);
 		String text = "";
 		String moda = "";		
 		ignoreds = MySQLAccess.getIgnoreds();
@@ -35,12 +41,8 @@ public class Stats {
 		
 		
 		String[] words = population.split(" ");
-		//String[] ignore = ignoreds.split("#");
+		//String[] ignore = ignoreds.split("#");		
 		
-		Date dNow = new Date( );
-	    SimpleDateFormat ft = 
-	    new SimpleDateFormat ("yyyy/MM/dd");
-	    String data = ft.format(dNow);
 	    
 		for (int i=0;i < words.length ; i++) {
 			words[i] = words[i].toLowerCase().replace("'", "`");			
