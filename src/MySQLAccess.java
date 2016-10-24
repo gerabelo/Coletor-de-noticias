@@ -504,7 +504,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			String query = "SELECT id FROM news WHERE dateCreated like '"+data.trim()+"%' AND sourceId="+sourceId.trim();;
+			String query = "SELECT id FROM news WHERE dateCreated like '"+data+"%' AND sourceId="+sourceId;
 			rs = stmt.executeQuery(query); //deleção logica? status = 1 
 			
 			while (rs.next()) {
@@ -586,6 +586,11 @@ public class MySQLAccess {
 	}
 
 	public static int isInModaTable(String word, String data, String sourceId) {
+
+		word = word.trim();
+		data = data.trim();
+		sourceId = sourceId.trim();
+		
 		int result = 0;
 		String query = "";
 		try {
@@ -615,6 +620,8 @@ public class MySQLAccess {
 	 * @return
 	 */
 	public static boolean incrementWordCounter(String word) {
+		word = word.trim();
+		
 		String query = "";
 		try {
 
@@ -636,6 +643,31 @@ public class MySQLAccess {
 		//return result;		
 	}
 	
+	public static boolean incrementWordCounter(String word, String sourceId) {
+		word = word.trim();
+		sourceId = sourceId.trim();
+		
+		String query = "";
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			query = "UPDATE moda SET counter = counter+1 WHERE word='"+word+"' AND sourceId="+sourceId;
+			//System.out.println(query);
+			stmt.executeUpdate(query);
+			return true;
+		} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+		} finally {
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}	        
+	    } 		
+		//return result;		
+	}
+
 	/**
 	 * 
 	 * @param word

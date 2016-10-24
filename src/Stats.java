@@ -110,21 +110,22 @@ public class Stats {
 		}		
 	}
 	
-	public void computeModaBySource (String population,String sourceId) {
+	public void computeModaBySource (String text,String sourceId) {
+		sourceId = sourceId.trim();
 		String query = "";		
 		
-		String[] words = population.split(" ");		
+		String[] words = text.split(" ");		
 	    
 		for (int i=0;i < words.length ; i++) {
-			words[i] = words[i].toLowerCase().replace("'", "`");			
+			words[i] = words[i].toLowerCase().replace("'", "").replace(",", "").replace(".", "").replace(":", "").replace(";", "").replace("\"", "");			
 			
 				if (!ignoreds.toLowerCase().contains(words[i])) {			
 			
  	
 						if (MySQLAccess.isInModaTable(words[i],data,sourceId) > 0) {
-							MySQLAccess.incrementWordCounter(words[i]);
+							MySQLAccess.incrementWordCounter(words[i],sourceId);
 						} else {
-							query = "INSERT INTO moda (word,counter,dateCreated,status,sourceId) VALUES ('"+words[i]+"',1,'"+data+"',0,'"+sourceId+"')";
+							query = "INSERT INTO moda (word,counter,dateCreated,status,sourceId) VALUES ('"+words[i].trim()+"',1,'"+data+"',0,'"+sourceId+"')";
 							//System.out.println(query);
 							MySQLAccess.executeUpdate(query);
 						}
