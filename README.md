@@ -1,6 +1,6 @@
 ## News Crawler
 
-Coletor de notícias.
+Este é um projeto -Eclipse/Java- de um Coletor de notícias baseado em jsoup, mysql e php.
 
 
 
