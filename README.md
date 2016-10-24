@@ -11,6 +11,8 @@ Apenas um coletor e notícias.
 
 
 ### Mãos à massa!
+  Restaure a base de dados ***mysql*** a partir do arquivo: ***newscrawler.sql***
+
   Executando o robô: 
   ```
   
