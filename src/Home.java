@@ -47,7 +47,7 @@ public class Home {
 			dNow = new Date( );
 		    SimpleDateFormat ft = new SimpleDateFormat ("yyyy/MM/dd HH:mm");
 		    
-		    query = "INSERT INTO stats (runTime,totalSources,totalKeyWords,totalNews,dateCreate) VALUES ('"
+		    query = "INSERT INTO stats (runTime,totalSources,totalKeyWords,totalNews,dateCreated) VALUES ('"
 					+runTime+"','"+totalSources+"','"+totalKeyWords+"','"+totalNews+"','"+ft.format(dNow)+"')";
 			
 		    //System.out.println(query);

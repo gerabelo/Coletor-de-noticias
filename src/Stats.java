@@ -38,8 +38,8 @@ public class Stats {
 			}
 		}
 		
-		System.out.println("Calculating accumulated moda");
-		estatistica.moda();
+		//System.out.println("Calculating accumulated moda");
+		//estatistica.moda();
 	}
 	
 	public void moda() {
@@ -75,7 +75,7 @@ public class Stats {
 				if (newsIds[i] != "") {
 					text = basededados.getTextFromNewsId(Integer.parseInt(newsIds[i]));
 					if (text.length() > 1) { 
-						estatistica.computeModa(text);
+						estatistica.computeModaBySource(text,sourceId);
 						text = "";
 					}
 				}
@@ -99,7 +99,7 @@ public class Stats {
 						if (MySQLAccess.isInModaTable(words[i],data) > 0) {
 							MySQLAccess.incrementWordCounter(words[i]);
 						} else {
-							query = "INSERT INTO moda (word,counter,dateCreate,status) VALUES ('"+words[i]+"',1,'"+data+"',0)";
+							query = "INSERT INTO moda (word,counter,dateCreated,status) VALUES ('"+words[i]+"',1,'"+data+"',0)";
 							//System.out.println(query);
 							MySQLAccess.executeUpdate(query);
 						}
@@ -110,4 +110,25 @@ public class Stats {
 		}		
 	}
 	
+	public void computeModaBySource (String population,String sourceId) {
+		String query = "";		
+		
+		String[] words = population.split(" ");		
+	    
+		for (int i=0;i < words.length ; i++) {
+			words[i] = words[i].toLowerCase().replace("'", "`");			
+			
+				if (!ignoreds.toLowerCase().contains(words[i])) {			
+			
+ 	
+						if (MySQLAccess.isInModaTable(words[i],data,sourceId) > 0) {
+							MySQLAccess.incrementWordCounter(words[i]);
+						} else {
+							query = "INSERT INTO moda (word,counter,dateCreated,status,sourceId) VALUES ('"+words[i]+"',1,'"+data+"',0,'"+sourceId+"')";
+							//System.out.println(query);
+							MySQLAccess.executeUpdate(query);
+						}
+				}
+		}		
+	}
 }

@@ -451,7 +451,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreate='"+data+"'");
+			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreated='"+data+"'");
 
 			while (rs.next()) { numberOfNewsByDate = Integer.parseInt(rs.getString("total")); }		
 			
@@ -476,7 +476,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			String query = "SELECT id FROM news WHERE dateCreate like '"+data+"%'";
+			String query = "SELECT id FROM news WHERE dateCreated like '"+data+"%'";
 			rs = stmt.executeQuery(query); //deleção logica? status = 1 
 			//System.out.println(query);
 			while (rs.next()) {
@@ -504,7 +504,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			String query = "SELECT id FROM news WHERE dateCreate like '"+data.trim()+"%' AND sourceId="+sourceId.trim();;
+			String query = "SELECT id FROM news WHERE dateCreated like '"+data.trim()+"%' AND sourceId="+sourceId.trim();;
 			rs = stmt.executeQuery(query); //deleção logica? status = 1 
 			
 			while (rs.next()) {
@@ -538,7 +538,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreate='"+data.trim()+"' AND sourceId ="+sourceId.trim());
+			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreated ='"+data.trim()+"' AND sourceId ="+sourceId.trim());
 
 			while (rs.next()) { numberOfNewsByDateAndSource = Integer.parseInt(rs.getString("total")); }		
 			
@@ -569,7 +569,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			query = "SELECT count(*) as total FROM moda WHERE word = '"+word+"' AND dateCreate = '"+data+"'";
+			query = "SELECT count(*) as total FROM moda WHERE word = '"+word+"' AND dateCreated = '"+data+"'";
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }			
@@ -585,6 +585,30 @@ public class MySQLAccess {
 		return result;		
 	}
 
+	public static int isInModaTable(String word, String data, String sourceId) {
+		int result = 0;
+		String query = "";
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			query = "SELECT count(*) as total FROM moda WHERE word = '"+word+"' AND dateCreated = '"+data+"' AND sourceId ="+sourceId;
+			rs = stmt.executeQuery(query);
+
+			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return result;		
+	}
 	/**
 	 * 
 	 * @param word

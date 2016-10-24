@@ -82,7 +82,7 @@ public class ParsingEngine {
 					    		    text = links.get(j).text().replace("'", "''").replaceAll("[\\t\\n\\r]"," ");
 					    		    hash = MySQLAccess.calculaMD5("0\n"+url+"\n"+text+"\n");  
 					    		    
-					    			String query = "INSERT INTO news (sourceId,url,text,value,dateCreate,hash) VALUES ("
+					    			String query = "INSERT INTO news (sourceId,url,text,value,dateCreated,hash) VALUES ("
 					    					+parts[0]+",'"	    					
 					    					+url+"','"
 					    					+text+"',"
