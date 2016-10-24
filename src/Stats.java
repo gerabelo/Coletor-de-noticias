@@ -18,49 +18,69 @@ public class Stats {
 	    new SimpleDateFormat ("yyyy/MM/dd");
 	    data = ft.format(dNow);
 		
-		estatistica.moda();
+//		new Thread() {
+//			public void run() {
+//				//MySQLAccess database = new MySQLAccess();
+//				estatistica.moda();
+//			}
+//		}.start();
 		
-		String[] source = MySQLAccess.getSources().split(" ");
-
-		//int k = 0;		
-		if (source.length > 0) {		
-			for(int i=0;i < source.length;i++) {
-				String[] parts = source[i].split("#");
-				estatistica.modabyid(parts[0]);
+		String[] sources = MySQLAccess.getSources().split(" ");
+		System.out.println("Calculating moda by source...");
+		System.out.println("Number of sources: "+sources.length);
+		
+		if (sources.length > 0) {		
+			for(int i=0;i < sources.length;i++) {
+				
+				String[] parts = sources[i].split("#");
+				System.out.println("["+(i+1)+"] processing source: [id:"+parts[0]+"] "+parts[1]);
+				estatistica.modaBySource(parts[0]);
 			}
 		}
 		
-		
+		System.out.println("Calculating accumulated moda");
+		estatistica.moda();
 	}
 	
 	public void moda() {
 		//System.out.println(data);
-		String[] newsIds = MySQLAccess.getNewsIdByDate(data).split(" ");
+		MySQLAccess basededados = new MySQLAccess();
+		String[] newsIds = basededados.getNewsIdByDate(data).split(" ");
 		//System.out.println(newsIds.length);
 		//System.out.println(newsIds[1]);
 		String text = ""; 
 		
-		for (int i = 0;i < newsIds.length;i++) {
-			//System.out.println(newsIds[i]);
-			text = MySQLAccess.getTextFromNewsId(Integer.parseInt(newsIds[i]));
-			if (text.length() > 1) { 
-				estatistica.computeModa(text);
-				text = "";
+		if (newsIds.length > 0) {
+			for (int i = 0;i < newsIds.length;i++) {
+				//System.out.println(newsIds[i]);
+				text = basededados.getTextFromNewsId(Integer.parseInt(newsIds[i]));
+				if (text.length() > 1) { 
+					estatistica.computeModa(text);
+					text = "";
+				}
 			}
-		}		
+		}
 	}
 	
-	public void modabyid(String sourceId) {
-		String[] newsIds = MySQLAccess.getNewsIdByDateAndSource(data,sourceId).split(" "); 
+	public void modaBySource(String sourceId) {
+		MySQLAccess basededados = new MySQLAccess();
+		String[] newsIds = basededados.getNewsIdByDateAndSource(data,sourceId).split(" "); 
 		String text = ""; 
-		
-		for (int i = 0;i < newsIds.length;i++) {
-			text = MySQLAccess.getTextFromNewsId(Integer.parseInt(newsIds[i]));
-			if (text.length() > 1) { 
-				estatistica.computeModa(text);
-				text = "";
-			}
-		}		
+		if (newsIds.length > 0) {	
+			for (int i = 0;i < newsIds.length;i++) {
+				//System.out.println("sourceId: "+sourceId);
+				//System.out.println("id: "+i);
+				//System.out.println("newsIds.length: "+newsIds.length);
+				//System.out.println("newsIds[i]: "+newsIds[i]);
+				if (newsIds[i] != "") {
+					text = basededados.getTextFromNewsId(Integer.parseInt(newsIds[i]));
+					if (text.length() > 1) { 
+						estatistica.computeModa(text);
+						text = "";
+					}
+				}
+			}		
+		}
 	}
 	
 	public void computeModa (String population) {

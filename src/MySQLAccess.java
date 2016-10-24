@@ -381,7 +381,7 @@ public class MySQLAccess {
 	 * @param id
 	 * @return textFromNewsId
 	 */
-	public static String getTextFromNewsId(int id) {
+	public String getTextFromNewsId(int id) {
 		String textFromNewsId = "";
 		
 		try {
@@ -467,7 +467,7 @@ public class MySQLAccess {
 		return numberOfNewsByDate;
 	}
 
-	public static String getNewsIdByDate(String data) {
+	public  String getNewsIdByDate(String data) {
 		String newsIdByDate = "";
 		
 		try {
@@ -495,7 +495,7 @@ public class MySQLAccess {
 		return newsIdByDate;
 	}
 
-	public static String getNewsIdByDateAndSource(String data,String sourceId) {
+	public String getNewsIdByDateAndSource(String data,String sourceId) {
 		String newsIdByDateAndSource = "";
 		
 		try {
@@ -504,7 +504,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			String query = "SELECT id FROM news WHERE dateCreate like '"+data+"%' AND sourceId="+sourceId;
+			String query = "SELECT id FROM news WHERE dateCreate like '"+data.trim()+"%' AND sourceId="+sourceId.trim();;
 			rs = stmt.executeQuery(query); //deleção logica? status = 1 
 			
 			while (rs.next()) {
@@ -538,7 +538,7 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreate='"+data+"' AND sourceId ="+sourceId);
+			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreate='"+data.trim()+"' AND sourceId ="+sourceId.trim());
 
 			while (rs.next()) { numberOfNewsByDateAndSource = Integer.parseInt(rs.getString("total")); }		
 			
