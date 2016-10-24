@@ -1,6 +1,6 @@
 ## News Crawler
 
-Apenas um coletor e notícias.
+Coletor de notícias.
 
 
 
@@ -11,7 +11,7 @@ Apenas um coletor e notícias.
 
 
 ### Mãos à massa!
-  Restaure a base de dados ***mysql*** a partir do arquivo: ***newscrawler.sql***
+  Restaure a base de dados ***mysql*** a partir do arquivo: **newscrawler.sql**
 
   Executando o robô: 
   ```
