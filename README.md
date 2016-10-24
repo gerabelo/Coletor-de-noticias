@@ -1,6 +1,6 @@
 ## News Crawler
 
-Este é um projeto -Eclipse/Java- de um Coletor de notícias baseado em jsoup, mysql e php.
+Este é um projeto -Eclipse/Java- de um ***Coletor de notícias*** baseado em jsoup, mysql e php.
 
 
 
@@ -11,7 +11,7 @@ Este é um projeto -Eclipse/Java- de um Coletor de notícias baseado em jsoup, m
 
 
 ### Mãos à massa!
-  Restaure a base de dados ***mysql*** a partir do arquivo: **newscrawler.sql**
+  Restaure a base de dados **mysql** a partir do arquivo: **newscrawler.sql**
 
   Executando o robô: 
   ```
