@@ -1,6 +1,6 @@
-import java.io.FileOutputStream;
+//import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+//import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
@@ -27,7 +27,7 @@ public class ParsingEngine {
 	}
 
 
-	public static int start(String arg) throws Exception {		
+	public int start(String arg) throws Exception {		
 		if (arg == "debug") debug = true; 
 		//PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
 		//System.setOut(out);

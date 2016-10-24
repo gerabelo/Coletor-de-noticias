@@ -23,6 +23,11 @@ public class MySQLAccess {
 	
 	public static void main(String args[]) {}
 	
+	/**
+	 * Realiza consultas genéricas à base e retorna os dados selecionados.
+	 * @param query
+	 * @return
+	 */
 	public static ResultSet executeQuery(String query) {
 		try {
 
@@ -49,8 +54,14 @@ public class MySQLAccess {
 		return null;		
 	}
 	
+	
+	/**
+	 * Realiza alterações e retorna true em caso de sucesso.
+	 * @param query
+	 * @return success
+	 */
 	public static boolean executeUpdate(String query) {
-		boolean result = false;
+		boolean success = false;
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -65,7 +76,7 @@ public class MySQLAccess {
 //
 //				System.out.println("ID: " + id + ", url: " + url);
 //			}	
-			result = true;
+			
 		} catch (Exception e) {
 			System.out.print(",");
 			//System.out.println(query);
@@ -76,11 +87,15 @@ public class MySQLAccess {
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    }
-		return result;
+		return success;
 	}
 
+	/**
+	 * Retorna string com as 'keywords' separadas por '#'.
+	 * @return
+	 */
 	public static String getWhiteList() {
-		String result = "";
+		String whiteList = "";
 		
 		try {
 
@@ -91,21 +106,26 @@ public class MySQLAccess {
 			rs = stmt.executeQuery("SELECT word FROM whiteList");
 			
 			while (rs.next()) {
-				result = result+rs.getString("word")+"#";
+				whiteList = whiteList+rs.getString("word")+"#";
 			}
-			return result;			
+						
 		} catch (Exception e) {
 			e.printStackTrace();
-			return result;
+			
 		} finally {
 	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    }
+		return whiteList;
 	}	
 	
+	/**
+	 * Retorna string com 'palavras a ignorar', separadas por '#'.
+	 * @return return blackList;
+	 */
 	public static String getBlackList() {
-		String result = "";
+		String blackList = "";
 		
 		try {
 
@@ -116,22 +136,26 @@ public class MySQLAccess {
 			rs = stmt.executeQuery("SELECT word FROM blackList");
 			
 			while (rs.next()) {
-				result = result+rs.getString("word")+"#";
+				blackList = blackList+rs.getString("word")+"#";
 			}
-			return result;
+			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return result;
 		} finally {
 	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    }
+		return blackList;
 	}
 	
+	/**
+	 * Retorna string com as 'id' e 'url' da fonte de notícias, separadas por #, em grupos separados por espaço ' '.
+	 * @return allSources
+	 */
 	public static String getSources() {
-		String result = "";
+		String allSources = "";
 		
 		try {
 
@@ -139,24 +163,26 @@ public class MySQLAccess {
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT id, url FROM sources");
+			rs = stmt.executeQuery("SELECT id, url FROM sources"); //deleção logica? status = 1 
 			
 			while (rs.next()) {
-				result = result+rs.getString("id")+"#"+rs.getString("url")+" ";
+				allSources = allSources+rs.getString("id")+"#"+rs.getString("url")+" ";
 				//System.out.println(result);
-			}			
-			return result;
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return result;
 		} finally {
 	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    }
+		return allSources;
 	}	
 
+	/**
+	 * @deprecated
+	*/
 	public static String getCategories() {
 		String result = "";
 		
@@ -183,6 +209,9 @@ public class MySQLAccess {
 	}
 	
 	
+	/**
+	 * @deprecated
+	*/
 	public static void removeDuplicates(String arg) {
 		
 		if (arg == "debug") debug = true;
@@ -239,7 +268,14 @@ public class MySQLAccess {
 		} 
 	}
 	
-	
+	/**
+	 * Retorna string com o Hash calculado para uma dada string. 
+	 * Utilizada na eliminação de duplicações. 
+	 * Embora o seu cálculo demande processamento o hash ocupa pouco espaço em disco.
+	 * @param row
+	 * @return md5
+	 * @throws GeneralSecurityException
+	 */
 	public static String calculaMD5(String row) throws GeneralSecurityException {		
 		String[] parts = row.split("\n");		
 		String key = parts[1]+parts[2];
@@ -248,24 +284,29 @@ public class MySQLAccess {
 	    m.update(key.getBytes(),0,key.length());
 	    
 	    BigInteger hash = new BigInteger(1, m.digest());
-		String result = hash.toString(16);	
+		String md5 = hash.toString(16);	
 		
-		return result;
+		return md5;
 	}
 	
+	/**
+	 * Verifica se o md5 já existe.
+	 * @param md5
+	 * @return colision
+	 */
 	public static boolean chkMD5(String md5){
-		boolean result = false;
+		boolean colision = false;
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			
 			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			stmt = conn.createStatement();
-			rs = stmt.executeQuery("SELECT hash FROM duplicates WHERE hash ='"+md5+"'");
+			rs = stmt.executeQuery("SELECT hash FROM duplicates WHERE hash ='"+md5+"'");//deleção lógica? status = 0
 			
 			if (rs.next()) {
-				result = true;
-				return result;
+				colision = true;
+				return colision;
 			}
 			
 		} catch (Exception e) {
@@ -275,11 +316,15 @@ public class MySQLAccess {
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    }		
-		return result;		
+		return colision;		
 	}
 	
+	/**
+	 * Retorna o numero de Keywords no formato string.
+	 * @return numberOfKeyWords
+	 */
 	public static String totalKeyWords() {
-		String result = "";
+		String numberOfKeyWords = "";
 		
 		try {
 
@@ -289,7 +334,7 @@ public class MySQLAccess {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT count(*) as total FROM whiteList");
 			
-			while (rs.next()) { result = rs.getString("total"); }
+			while (rs.next()) { numberOfKeyWords = rs.getString("total"); }
 
 		} catch (Exception e) {
 				e.printStackTrace();
@@ -299,11 +344,15 @@ public class MySQLAccess {
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    }		
 
-		return result;
+		return numberOfKeyWords;
 	}
-	
+
+	/**
+	 * Retorna a quantidade de 'fontes de noticia' no formato string.
+	 * @return numberOfSources
+	 */
 	public static String totalSources() {
-		String result = "";
+		String numberOfSources = "";
 		
 		try {
 
@@ -313,7 +362,7 @@ public class MySQLAccess {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT count(*) as total FROM sources");
 
-			while (rs.next()) { result = rs.getString("total"); }		
+			while (rs.next()) { numberOfSources = rs.getString("total"); }		
 			
 			
 		} catch (Exception e) {
@@ -324,11 +373,16 @@ public class MySQLAccess {
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    } 
 		
-		return result;
+		return numberOfSources;
 	}
 	
+	/**
+	 * Retorna o conteúdo do campo 'Text', no formato string, referente ao 'id' passado, no formato int.
+	 * @param id
+	 * @return textFromNewsId
+	 */
 	public static String getTextFromNewsId(int id) {
-		String result = "";
+		String textFromNewsId = "";
 		
 		try {
 
@@ -338,7 +392,7 @@ public class MySQLAccess {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT text FROM news WHERE id="+id);
 
-			while (rs.next()) { result = rs.getString("text"); }		
+			while (rs.next()) { textFromNewsId = rs.getString("text"); }		
 			
 			
 		} catch (Exception e) {
@@ -349,11 +403,16 @@ public class MySQLAccess {
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    } 
 		
-		return result;
+		return textFromNewsId;
 	}
 	
+	
+	/**
+	 * Retorna a quantidade de notícias armazenadas, no formato int.
+	 * @return numberOfNews
+	 */
 	public static int getTotalNews() {
-		int result = 0;
+		int numberOfNews = 0;
 		
 		try {
 
@@ -363,7 +422,7 @@ public class MySQLAccess {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT count(*) as total FROM news");
 
-			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }		
+			while (rs.next()) { numberOfNews = Integer.parseInt(rs.getString("total")); }		
 			
 			
 		} catch (Exception e) {
@@ -374,12 +433,17 @@ public class MySQLAccess {
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    } 
 		
-		return result;
+		return numberOfNews;
 	}
 	
-
-	public static int getNewsByDate(String data) {
-		int result = 0;
+	/**
+	 * Retorna a quantidade de notícias para uma determinada data, passada como parâmetro no formato string.
+	 * 
+	 * @param data
+	 * @return numberOfNewsByDate
+	 */
+	public static int getNumberOfNewsByDate(String data) {
+		int numberOfNewsByDate = 0;
 		
 		try {
 
@@ -389,7 +453,7 @@ public class MySQLAccess {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreate='"+data+"'");
 
-			while (rs.next()) { result = Integer.parseInt(rs.getString("total")); }		
+			while (rs.next()) { numberOfNewsByDate = Integer.parseInt(rs.getString("total")); }		
 			
 			
 		} catch (Exception e) {
@@ -400,9 +464,102 @@ public class MySQLAccess {
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    } 
 		
-		return result;
+		return numberOfNewsByDate;
 	}
 
+	public static String getNewsIdByDate(String data) {
+		String newsIdByDate = "";
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			String query = "SELECT id FROM news WHERE dateCreate like '"+data+"%'";
+			rs = stmt.executeQuery(query); //deleção logica? status = 1 
+			//System.out.println(query);
+			while (rs.next()) {
+				newsIdByDate = newsIdByDate+rs.getString("id")+" ";
+				//System.out.println(result);
+			}			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return newsIdByDate;
+	}
+
+	public static String getNewsIdByDateAndSource(String data,String sourceId) {
+		String newsIdByDateAndSource = "";
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			String query = "SELECT id FROM news WHERE dateCreate like '"+data+"%' AND sourceId="+sourceId;
+			rs = stmt.executeQuery(query); //deleção logica? status = 1 
+			
+			while (rs.next()) {
+				newsIdByDateAndSource = newsIdByDateAndSource+rs.getString("id")+" ";
+				//System.out.println(result);
+			}			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return newsIdByDateAndSource;
+	}
+
+	/**
+	 * 
+	 * @param data
+	 * @param sourceId
+	 * @return
+	 */
+	public static int getNumberOfNewsByDateAndSource(String data,String sourceId) {
+		int numberOfNewsByDateAndSource = 0;
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
+			
+			conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT count(*) as total FROM news WHERE dateCreate='"+data+"' AND sourceId ="+sourceId);
+
+			while (rs.next()) { numberOfNewsByDateAndSource = Integer.parseInt(rs.getString("total")); }		
+			
+			
+		} catch (Exception e) {
+				e.printStackTrace();
+		} finally {
+	        if (rs != null) try { rs.close(); } catch (SQLException logOrIgnore) {}
+	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
+	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
+	    } 
+		
+		return numberOfNewsByDateAndSource;
+	}
+
+	/**
+	 * 
+	 * @param word
+	 * @param data
+	 * @return
+	 */
 	public static int isInModaTable(String word, String data) {
 		int result = 0;
 		String query = "";
@@ -428,6 +585,11 @@ public class MySQLAccess {
 		return result;		
 	}
 
+	/**
+	 * 
+	 * @param word
+	 * @return
+	 */
 	public static boolean incrementWordCounter(String word) {
 		String query = "";
 		try {
@@ -450,6 +612,11 @@ public class MySQLAccess {
 		//return result;		
 	}
 	
+	/**
+	 * 
+	 * @param word
+	 * @return
+	 */
 	public static int isInIgnoredsTable(String word) {
 		int result = 0;
 		String query = "";
@@ -475,6 +642,10 @@ public class MySQLAccess {
 		return result;		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public static String getIgnoreds() {
 		String result = "";
 		
@@ -500,7 +671,5 @@ public class MySQLAccess {
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
 	        if (conn != null) try { conn.close(); } catch (SQLException logOrIgnore) {}
 	    }
-	}	
-
-
+	}
 }

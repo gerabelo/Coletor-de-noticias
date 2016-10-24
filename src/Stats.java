@@ -7,38 +7,64 @@ public class Stats {
 	/**
 	 * @param args
 	 */
-	public static String ignoreds = "";
+	public static String ignoreds = MySQLAccess.getIgnoreds();;
 	public static String data = "";
+	static Stats estatistica = new Stats();
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub	
 		Date dNow = new Date( );
 	    SimpleDateFormat ft = 
 	    new SimpleDateFormat ("yyyy/MM/dd");
 	    data = ft.format(dNow);
-	    
-		int newsId = 0;
-		int dbSize = MySQLAccess.getNewsByDate(data);
-		String text = "";
-		String moda = "";		
-		ignoreds = MySQLAccess.getIgnoreds();
 		
-		for (int i = 0;i < dbSize;i++) {
-			text = MySQLAccess.getTextFromNewsId(i);
-			if (text.length() > 1) { 
-				moda = computeModa(text);
-				text = "";
+		estatistica.moda();
+		
+		String[] source = MySQLAccess.getSources().split(" ");
+
+		//int k = 0;		
+		if (source.length > 0) {		
+			for(int i=0;i < source.length;i++) {
+				String[] parts = source[i].split("#");
+				estatistica.modabyid(parts[0]);
 			}
 		}
 		
 		
-		
 	}
 	
-	public static String computeModa (String population) {
-		String result = "";
-		String query = "";
+	public void moda() {
+		//System.out.println(data);
+		String[] newsIds = MySQLAccess.getNewsIdByDate(data).split(" ");
+		//System.out.println(newsIds.length);
+		//System.out.println(newsIds[1]);
+		String text = ""; 
 		
+		for (int i = 0;i < newsIds.length;i++) {
+			//System.out.println(newsIds[i]);
+			text = MySQLAccess.getTextFromNewsId(Integer.parseInt(newsIds[i]));
+			if (text.length() > 1) { 
+				estatistica.computeModa(text);
+				text = "";
+			}
+		}		
+	}
+	
+	public void modabyid(String sourceId) {
+		String[] newsIds = MySQLAccess.getNewsIdByDateAndSource(data,sourceId).split(" "); 
+		String text = ""; 
+		
+		for (int i = 0;i < newsIds.length;i++) {
+			text = MySQLAccess.getTextFromNewsId(Integer.parseInt(newsIds[i]));
+			if (text.length() > 1) { 
+				estatistica.computeModa(text);
+				text = "";
+			}
+		}		
+	}
+	
+	public void computeModa (String population) {
+		String query = "";		
 		
 		String[] words = population.split(" ");
 		//String[] ignore = ignoreds.split("#");		
@@ -62,7 +88,6 @@ public class Stats {
 					//}
 				}
 		}		
-		return result;
 	}
 	
 }

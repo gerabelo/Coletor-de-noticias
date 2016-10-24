@@ -11,6 +11,7 @@ public class Home {
 	public static void main(String[] args) throws Exception {
 		
 		//System.out.println(MySQLAccess.totalSources());
+		ParsingEngine robot = new ParsingEngine();
 		
 		long startTime;
 		int totalNews;
@@ -22,13 +23,10 @@ public class Home {
 		
 		Date dNow;
 		
-		int contadordeexecucoes = 1;
-		
-		
 		while(true) {
 			startTime = System.currentTimeMillis();
 			
-			totalNews = ParsingEngine.start("silence");			
+			totalNews = robot.start("silence");			
 			
 			estimatedTime = System.currentTimeMillis() - startTime;
 			//long estimatedRemoveDuplicatesTime = endTime - startRemoveDuplicatesTime;
