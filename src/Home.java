@@ -11,7 +11,6 @@ public class Home {
 	public static void main(String[] args) throws Exception {
 		
 		//System.out.println(MySQLAccess.totalSources());
-		ParsingEngine robot = new ParsingEngine();
 		
 		long startTime;
 		int totalNews;
@@ -24,6 +23,9 @@ public class Home {
 		Date dNow;
 		
 		while(true) {
+			MySQLAccess basededados = new MySQLAccess();
+			ParsingEngine robot = new ParsingEngine();
+			
 			startTime = System.currentTimeMillis();
 			
 			totalNews = robot.start("silence");			
@@ -41,8 +43,8 @@ public class Home {
 			String query = "";
 			String runTime = minutes+":"+seconds;
 			
-			String totalSources = MySQLAccess.totalSources();
-			String totalKeyWords  = MySQLAccess.totalKeyWords();		
+			String totalSources = basededados.totalSources();
+			String totalKeyWords  = basededados.totalKeyWords();		
 
 			dNow = new Date( );
 		    SimpleDateFormat ft = new SimpleDateFormat ("yyyy/MM/dd HH:mm");
@@ -52,7 +54,7 @@ public class Home {
 			
 		    //System.out.println(query);
 		    
-		    MySQLAccess.executeUpdate(query);
+		    basededados.executeUpdate(query);
 		}
 		
 	}

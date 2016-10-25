@@ -7,7 +7,8 @@ public class Stats {
 	/**
 	 * @param args
 	 */
-	public static String ignoreds = MySQLAccess.getIgnoreds();;
+	public static MySQLAccess basededados = new MySQLAccess();
+	public static String ignoreds = basededados.getIgnoreds();;
 	public static String data = "";
 	static Stats estatistica = new Stats();
 	
@@ -24,8 +25,9 @@ public class Stats {
 //				estatistica.moda();
 //			}
 //		}.start();
+	    MySQLAccess basededados = new MySQLAccess();
 		
-		String[] sources = MySQLAccess.getSources().split(" ");
+		String[] sources = basededados.getSources().split(" ");
 		System.out.println("Calculating moda by source...");
 		System.out.println("Number of sources: "+sources.length);
 		
@@ -85,7 +87,7 @@ public class Stats {
 	
 	public void computeModa (String population) {
 		String query = "";		
-		
+		MySQLAccess basededados = new MySQLAccess();
 		String[] words = population.split(" ");
 		//String[] ignore = ignoreds.split("#");		
 		
@@ -96,12 +98,12 @@ public class Stats {
 				if (!ignoreds.toLowerCase().contains(words[i])) {			
 			
 					//if (MySQLAccess.isInIgnoredsTable(words[i]) == 0) { removido porque a leitura de disco intensa pode ser desnecessária. 	
-						if (MySQLAccess.isInModaTable(words[i],data) > 0) {
-							MySQLAccess.incrementWordCounter(words[i]);
+						if (basededados.isInModaTable(words[i],data) > 0) {
+							basededados.incrementWordCounter(words[i]);
 						} else {
 							query = "INSERT INTO moda (word,counter,dateCreated,status) VALUES ('"+words[i]+"',1,'"+data+"',0)";
 							//System.out.println(query);
-							MySQLAccess.executeUpdate(query);
+							basededados.executeUpdate(query);
 						}
 					//} else {
 						//System.out.println("ignoring "+words[i]);
@@ -111,6 +113,7 @@ public class Stats {
 	}
 	
 	public void computeModaBySource (String text,String sourceId) {
+		MySQLAccess basededados = new MySQLAccess();
 		sourceId = sourceId.trim();
 		String query = "";		
 		
@@ -122,12 +125,12 @@ public class Stats {
 				if (!ignoreds.toLowerCase().contains(words[i])) {			
 			
  	
-						if (MySQLAccess.isInModaTable(words[i],data,sourceId) > 0) {
-							MySQLAccess.incrementWordCounter(words[i],sourceId);
+						if (basededados.isInModaTable(words[i],data,sourceId) > 0) {
+							basededados.incrementWordCounter(words[i],sourceId);
 						} else {
 							query = "INSERT INTO moda (word,counter,dateCreated,status,sourceId) VALUES ('"+words[i].trim()+"',1,'"+data+"',0,'"+sourceId+"')";
 							//System.out.println(query);
-							MySQLAccess.executeUpdate(query);
+							basededados.executeUpdate(query);
 						}
 				}
 		}		

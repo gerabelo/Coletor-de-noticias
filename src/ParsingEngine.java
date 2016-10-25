@@ -27,7 +27,8 @@ public class ParsingEngine {
 	}
 
 
-	public int start(String arg) throws Exception {		
+	public int start(String arg) throws Exception {
+		MySQLAccess basededados = new MySQLAccess();
 		if (arg == "debug") debug = true; 
 		//PrintStream out = new PrintStream(new FileOutputStream("output.txt"));
 		//System.setOut(out);
@@ -44,7 +45,7 @@ public class ParsingEngine {
 		String url;
 		String text;
 		
-		String[] source = MySQLAccess.getSources().split(" ");
+		String[] source = basededados.getSources().split(" ");
 		int k = 0;
 		
 		if (source.length > 0) {		
@@ -63,13 +64,15 @@ public class ParsingEngine {
 				
 				try {
 					
-					links = getURL(parts[1]);
+					ParsingEngine robot = new ParsingEngine();
+					
+					links = robot.getURL(parts[1]);
 					totalLinks = links.size();
 					result = result + totalLinks;
 					
 					if (links != null) {
 						for(int j=0;j < totalLinks;j++) {
-				    		if (!chkBlackList(links.get(j).text())) {
+				    		if (!robot.chkBlackList(links.get(j).text())) {
 				    			
 				    			if (links.get(j).text().split(" ").length > minimumWordsInAFrase) {
 					    			int value = num_of_keyWords(links.get(j).text()); //number of keywords occurrences
@@ -80,7 +83,7 @@ public class ParsingEngine {
 					    		    
 					    		    url = links.get(j).attr("abs:href").replace("'", "''").replaceAll("[\\t\\n\\r]"," ");
 					    		    text = links.get(j).text().replace("'", "''").replaceAll("[\\t\\n\\r]"," ");
-					    		    hash = MySQLAccess.calculaMD5("0\n"+url+"\n"+text+"\n");  
+					    		    hash = basededados.calculaMD5("0\n"+url+"\n"+text+"\n");  
 					    		    
 					    			String query = "INSERT INTO news (sourceId,url,text,value,dateCreated,hash) VALUES ("
 					    					+parts[0]+",'"	    					
@@ -92,7 +95,7 @@ public class ParsingEngine {
 					    			
 					    			//if (value > 0) if (MySQLAccess.executeUpdate(query)) { result++; partial++;}
 					    			partial++;
-					    			if (MySQLAccess.executeUpdate(query)) { add++; }
+					    			if (basededados.executeUpdate(query)) { add++; }
 					    			Thread.sleep(delay);
 					    			
 					    			if (debug) System.out.println(k+": "+query);
@@ -121,8 +124,9 @@ public class ParsingEngine {
 		return result;
 	}
 	
-	public static boolean chkBlackList(String text) {		
-		String blackList = MySQLAccess.getBlackList();
+	public boolean chkBlackList(String text) {
+		MySQLAccess basededados = new MySQLAccess();
+		String blackList = basededados.getBlackList();
 		String[] parts = blackList.split("#");
 		
 		//System.out.println("blacklist...");
@@ -133,10 +137,10 @@ public class ParsingEngine {
 		return false;
 	}
 	
-	public static int num_of_keyWords(String text) {
+	public int num_of_keyWords(String text) {
 		int count = 0;
-		
-		String whiteList = MySQLAccess.getWhiteList();
+		MySQLAccess basededados = new MySQLAccess();
+		String whiteList = basededados.getWhiteList();
 		String[] parts = whiteList.split("#");
 		
 		//System.out.println("processando keywords...");		
@@ -150,7 +154,7 @@ public class ParsingEngine {
 	
 	
 	public String getTitle(String url) throws Exception {
-	    Document document;
+	    Document document = null;
 	    try {
 	        document = Jsoup.connect(url).get();
 
@@ -164,7 +168,7 @@ public class ParsingEngine {
 	}	
 	
 	public String getMetaData(String url) throws Exception {
-		Document document;
+		Document document = null;
 		try {
 			document = Jsoup.connect(url).get();
 		 
@@ -179,7 +183,7 @@ public class ParsingEngine {
 		}		
 	}
 	
-	public static Elements getURL(String url) {
+	public Elements getURL(String url) {
 	    Document document = null;
 	    Elements links = null;
 	    
@@ -211,18 +215,19 @@ public class ParsingEngine {
 	    return links;
 	}
 	
-	public static String getDescription(String url) throws Exception {
-		Document document;
+	public String getDescription(String url) throws Exception {
+		Document document = null;
+		String description = "";
 		try {
 			document = Jsoup.connect(url).get();
 		 
-			String description = document.select("meta[name=description]").get(0).attr("content");
+			description = document.select("meta[name=description]").get(0).attr("content");
 			
-			return description;
+			
 		 
 		} catch (IOException e) {
 			//e.printStackTrace();
-			return null;
-		}		
+		}	
+		return description;
 	}
 }

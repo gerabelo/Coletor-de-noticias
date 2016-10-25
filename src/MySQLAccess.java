@@ -28,7 +28,7 @@ public class MySQLAccess {
 	 * @param query
 	 * @return
 	 */
-	public static ResultSet executeQuery(String query) {
+	public ResultSet executeQuery(String query) {
 		try {
 
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -60,7 +60,7 @@ public class MySQLAccess {
 	 * @param query
 	 * @return success
 	 */
-	public static boolean executeUpdate(String query) {
+	public boolean executeUpdate(String query) {
 		boolean success = false;
 		try {
 
@@ -94,7 +94,7 @@ public class MySQLAccess {
 	 * Retorna string com as 'keywords' separadas por '#'.
 	 * @return
 	 */
-	public static String getWhiteList() {
+	public String getWhiteList() {
 		String whiteList = "";
 		
 		try {
@@ -124,7 +124,7 @@ public class MySQLAccess {
 	 * Retorna string com 'palavras a ignorar', separadas por '#'.
 	 * @return return blackList;
 	 */
-	public static String getBlackList() {
+	public String getBlackList() {
 		String blackList = "";
 		
 		try {
@@ -154,7 +154,7 @@ public class MySQLAccess {
 	 * Retorna string com as 'id' e 'url' da fonte de notícias, separadas por #, em grupos separados por espaço ' '.
 	 * @return allSources
 	 */
-	public static String getSources() {
+	public String getSources() {
 		String allSources = "";
 		
 		try {
@@ -183,7 +183,7 @@ public class MySQLAccess {
 	/**
 	 * @deprecated
 	*/
-	public static String getCategories() {
+	public String getCategories() {
 		String result = "";
 		
 		try {
@@ -212,7 +212,7 @@ public class MySQLAccess {
 	/**
 	 * @deprecated
 	*/
-	public static void removeDuplicates(String arg) {
+	public void removeDuplicates(String arg) {
 		
 		if (arg == "debug") debug = true;
 		
@@ -276,7 +276,7 @@ public class MySQLAccess {
 	 * @return md5
 	 * @throws GeneralSecurityException
 	 */
-	public static String calculaMD5(String row) throws GeneralSecurityException {		
+	public String calculaMD5(String row) throws GeneralSecurityException {		
 		String[] parts = row.split("\n");		
 		String key = parts[1]+parts[2];
 		
@@ -294,7 +294,7 @@ public class MySQLAccess {
 	 * @param md5
 	 * @return colision
 	 */
-	public static boolean chkMD5(String md5){
+	public boolean chkMD5(String md5){
 		boolean colision = false;
 		try {
 
@@ -323,7 +323,7 @@ public class MySQLAccess {
 	 * Retorna o numero de Keywords no formato string.
 	 * @return numberOfKeyWords
 	 */
-	public static String totalKeyWords() {
+	public String totalKeyWords() {
 		String numberOfKeyWords = "";
 		
 		try {
@@ -351,7 +351,7 @@ public class MySQLAccess {
 	 * Retorna a quantidade de 'fontes de noticia' no formato string.
 	 * @return numberOfSources
 	 */
-	public static String totalSources() {
+	public String totalSources() {
 		String numberOfSources = "";
 		
 		try {
@@ -411,7 +411,7 @@ public class MySQLAccess {
 	 * Retorna a quantidade de notícias armazenadas, no formato int.
 	 * @return numberOfNews
 	 */
-	public static int getTotalNews() {
+	public int getTotalNews() {
 		int numberOfNews = 0;
 		
 		try {
@@ -442,7 +442,7 @@ public class MySQLAccess {
 	 * @param data
 	 * @return numberOfNewsByDate
 	 */
-	public static int getNumberOfNewsByDate(String data) {
+	public int getNumberOfNewsByDate(String data) {
 		int numberOfNewsByDate = 0;
 		
 		try {
@@ -529,7 +529,7 @@ public class MySQLAccess {
 	 * @param sourceId
 	 * @return
 	 */
-	public static int getNumberOfNewsByDateAndSource(String data,String sourceId) {
+	public int getNumberOfNewsByDateAndSource(String data,String sourceId) {
 		int numberOfNewsByDateAndSource = 0;
 		
 		try {
@@ -560,7 +560,7 @@ public class MySQLAccess {
 	 * @param data
 	 * @return
 	 */
-	public static int isInModaTable(String word, String data) {
+	public int isInModaTable(String word, String data) {
 		int result = 0;
 		String query = "";
 		try {
@@ -585,7 +585,7 @@ public class MySQLAccess {
 		return result;		
 	}
 
-	public static int isInModaTable(String word, String data, String sourceId) {
+	public int isInModaTable(String word, String data, String sourceId) {
 
 		word = word.trim();
 		data = data.trim();
@@ -619,7 +619,7 @@ public class MySQLAccess {
 	 * @param word
 	 * @return
 	 */
-	public static boolean incrementWordCounter(String word) {
+	public boolean incrementWordCounter(String word) {
 		word = word.trim();
 		
 		String query = "";
@@ -643,7 +643,7 @@ public class MySQLAccess {
 		//return result;		
 	}
 	
-	public static boolean incrementWordCounter(String word, String sourceId) {
+	public boolean incrementWordCounter(String word, String sourceId) {
 		word = word.trim();
 		sourceId = sourceId.trim();
 		
@@ -673,7 +673,7 @@ public class MySQLAccess {
 	 * @param word
 	 * @return
 	 */
-	public static int isInIgnoredsTable(String word) {
+	public int isInIgnoredsTable(String word) {
 		int result = 0;
 		String query = "";
 		try {
@@ -702,7 +702,7 @@ public class MySQLAccess {
 	 * 
 	 * @return
 	 */
-	public static String getIgnoreds() {
+	public String getIgnoreds() {
 		String result = "";
 		
 		try {
