@@ -75,7 +75,8 @@ public class MySQLAccess {
 //				String url = rs.getString("url");
 //
 //				System.out.println("ID: " + id + ", url: " + url);
-//			}	
+//			}
+			success = true;
 			
 		} catch (Exception e) {
 			System.out.print(",");
