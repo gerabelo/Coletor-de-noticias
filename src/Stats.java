@@ -1,3 +1,5 @@
+//import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,12 +14,25 @@ public class Stats {
 	public static String data = "";
 	static Stats estatistica = new Stats();
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub	
-		Date dNow = new Date( );
-	    SimpleDateFormat ft = 
-	    new SimpleDateFormat ("yyyy/MM/dd");
-	    data = ft.format(dNow);
+	public static void main(String[] args) throws ParseException {
+		// TODO Auto-generated method stub
+		SimpleDateFormat ft = new SimpleDateFormat ("yyyy/MM/dd");
+		
+		if (args.length > 0) {
+			//System.out.println("args[0]: "+args[0]+" length:"+args[0].length());
+			Date date = null;			
+		    ft.setLenient(false);
+		    try {
+		    	date = ft.parse(args[0]);
+		    	data = ft.format(date);
+		    	
+		    } catch (Exception e) {
+		    	
+		    }
+		} else {
+			Date dNow = new Date( );		    
+		    data = ft.format(dNow);			
+		}
 		
 //		new Thread() {
 //			public void run() {
@@ -65,6 +80,8 @@ public class Stats {
 	}
 	
 	public void modaBySource(String sourceId) {
+    	System.out.println(data);
+
 		MySQLAccess basededados = new MySQLAccess();
 		String[] newsIds = basededados.getNewsIdByDateAndSource(data,sourceId).split(" "); 
 		String text = ""; 

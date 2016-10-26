@@ -21,7 +21,7 @@ Este é um projeto -Eclipse/Java- de um ***Coletor de notícias*** baseado em js
   Encontrando a [Moda](https://pt.wikipedia.org/wiki/Moda_(estat%C3%ADstica)):
   ```
   
-  java Stats
+  java Stats 2016/10/26
   ```
 
 
