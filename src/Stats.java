@@ -62,6 +62,7 @@ public class Stats {
 	public void moda() {
 		//System.out.println(data);
 		MySQLAccess basededados = new MySQLAccess();
+		basededados.executeUpdate("DELETE FROM moda WHERE dateCreated = '"+data+"'");
 		String[] newsIds = basededados.getNewsIdByDate(data).split(" ");
 		//System.out.println(newsIds.length);
 		//System.out.println(newsIds[1]);
