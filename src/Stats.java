@@ -43,14 +43,15 @@ public class Stats {
 	    MySQLAccess basededados = new MySQLAccess();
 		
 		String[] sources = basededados.getSources().split(" ");
+		int totalSources = sources.length;
 		System.out.println("Calculating moda by source...");
-		System.out.println("Number of sources: "+sources.length);
+		System.out.println("Number of sources: "+totalSources);
 		
 		if (sources.length > 0) {		
 			for(int i=0;i < sources.length;i++) {
 				
 				String[] parts = sources[i].split("#");
-				System.out.println("["+(i+1)+"] processing source: [id:"+parts[0]+"] "+parts[1]);
+				System.out.println("["+(i+1)+"/"+totalSources+"] processing source: [id:"+parts[0]+"] "+parts[1]);
 				estatistica.modaBySource(parts[0]);
 			}
 		}
