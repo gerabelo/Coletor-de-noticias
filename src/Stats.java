@@ -17,6 +17,7 @@ public class Stats {
 	public static void main(String[] args) throws ParseException {
 		// TODO Auto-generated method stub
 		SimpleDateFormat ft = new SimpleDateFormat ("yyyy/MM/dd");
+		basededados.executeUpdate("DELETE FROM moda WHERE dateCreated = '"+data+"'");
 		
 		if (args.length > 0) {
 			//System.out.println("args[0]: "+args[0]+" length:"+args[0].length());
@@ -63,7 +64,7 @@ public class Stats {
 	public void moda() {
 		//System.out.println(data);
 		MySQLAccess basededados = new MySQLAccess();
-		basededados.executeUpdate("DELETE FROM moda WHERE dateCreated = '"+data+"'");
+		//basededados.executeUpdate("DELETE FROM moda WHERE dateCreated = '"+data+"'");
 		String[] newsIds = basededados.getNewsIdByDate(data).split(" ");
 		//System.out.println(newsIds.length);
 		//System.out.println(newsIds[1]);
@@ -85,7 +86,7 @@ public class Stats {
     	System.out.println(data);
 
 		MySQLAccess basededados = new MySQLAccess();
-		basededados.executeUpdate("DELETE FROM moda WHERE dateCreated = '"+data+"'");
+		//basededados.executeUpdate("DELETE FROM moda WHERE dateCreated = '"+data+"'");
 		String[] newsIds = basededados.getNewsIdByDateAndSource(data,sourceId).split(" "); 
 		String text = ""; 
 		if (newsIds.length > 0) {	
